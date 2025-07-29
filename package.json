@@ -1,0 +1,60 @@
+{
+  "name": "cadillac-ev-cis",
+  "version": "1.0.0",
+  "description": "CADILLAC EV Customer Intelligence System für die Schweiz",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend",
+    "shared"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:firebase\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:firebase": "firebase emulators:start",
+    "build": "npm run build:frontend && npm run build:functions",
+    "build:frontend": "cd frontend && npm run build",
+    "build:functions": "cd functions && npm run build",
+    "start": "concurrently \"npm run start:frontend\" \"npm run start:firebase\"",
+    "start:frontend": "cd frontend && npm start",
+    "start:firebase": "firebase emulators:start --only hosting",
+    "test": "npm run test:frontend && npm run test:functions",
+    "test:frontend": "cd frontend && npm test",
+    "test:functions": "cd functions && npm test",
+    "lint": "npm run lint:frontend && npm run lint:functions",
+    "lint:frontend": "cd frontend && npm run lint",
+    "lint:functions": "cd functions && npm run lint",
+    "firebase:deploy": "firebase deploy",
+    "firebase:deploy:hosting": "firebase deploy --only hosting",
+    "firebase:deploy:functions": "firebase deploy --only functions",
+    "firebase:deploy:firestore": "firebase deploy --only firestore",
+    "firebase:emulators": "firebase emulators:start",
+    "db:seed": "node scripts/seed-firestore.js"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "prettier": "^3.1.0",
+    "eslint": "^8.55.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.1",
+    "@typescript-eslint/parser": "^6.13.1"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/cadillac-ev-cis.git"
+  },
+  "keywords": [
+    "cadillac",
+    "electric-vehicles",
+    "customer-intelligence",
+    "switzerland",
+    "automotive",
+    "crm"
+  ],
+  "author": "CADILLAC Switzerland",
+  "license": "PROPRIETARY"
+}
+

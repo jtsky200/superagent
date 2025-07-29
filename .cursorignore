@@ -1,0 +1,25 @@
+# Ignore build artifacts and dependencies
+node_modules/
+dist/
+build/
+.out/
+.next/
+.vscode/
+
+# Ignore temporary and system files
+.DS_Store
+*.log
+*.tmp
+*.swp
+
+
+# Allow environment files (needed for AI functionality)
+!.env
+!.env.local
+!firebase-debug.log
+!dev-output.log
+
+
+# Optional: ignore large datasets or backups
+
+backups/

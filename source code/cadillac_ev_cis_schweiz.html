@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CADILLAC EV - Customer Intelligence System Schweiz</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-dark: #000000;
+            --primary-light: #ffffff;
+            --gray-100: #f7f7f7;
+            --gray-200: #e6e6e6;
+            --gray-300: #d1d1d1;
+            --gray-400: #b0b0b0;
+            --gray-500: #909090;
+            --gray-600: #707070;
+            --gray-700: #505050;
+            --gray-800: #303030;
+            --gray-900: #1a1a1a;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            color: var(--primary-dark);
+            background-color: var(--primary-light);
+        }
+
+        .card {
+            background-color: var(--primary-light);
+            border: 1px solid var(--gray-300);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-dark);
+            color: var(--primary-light);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--gray-800);
+        }
+
+        .btn-outline {
+            border: 1px solid var(--primary-dark);
+            color: var(--primary-dark);
+            background-color: transparent;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--gray-200);
+        }
+
+        .nav-link {
+            color: var(--gray-600);
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-dark);
+            border-bottom: 2px solid var(--primary-dark);
+        }
+
+        .table-row-alt:nth-child(even) {
+            background-color: var(--gray-100);
+        }
+
+        .progress-bar {
+            background-color: var(--gray-300);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-value {
+            height: 100%;
+            background-color: var(--primary-dark);
+        }
+
+        .cadillac-logo {
+            max-height: 60px;
+        }
+
+        /* Custom styles for charts */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
+        /* Custom toggle switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--gray-400);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: var(--primary-light);
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-dark);
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px var(--primary-dark);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Dashboard grid layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem;
+        }
+
+        .span-4 {
+            grid-column: span 4;
+        }
+
+        .span-6 {
+            grid-column: span 6;
+        }
+
+        .span-8 {
+            grid-column: span 8;
+        }
+
+        .span-12 {
+            grid-column: span 12;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+            
+            .lg-span-6 {
+                grid-column: span 6;
+            }
+            
+            .lg-span-3 {
+                grid-column: span 3;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .span-4, .span-6, .span-8, .span-12, .lg-span-3, .lg-span-6 {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-300">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <h1 class="text-2xl font-bold">CADILLAC EV</h1>
+                <span class="text-xl font-light">|</span>
+                <h2 class="text-xl">Customer Intelligence System</h2>
+            </div>
+            <div class="flex items-center space-x-6">
+                <button class="btn-outline py-2 px-4 rounded flex items-center space-x-2">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Hilfe</span>
+                </button>
+                <div class="relative">
+                    <button class="btn-outline py-2 px-4 rounded flex items-center space-x-2">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Admin</span>
+                        <i class="fas fa-chevron-down text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Navigation -->
+    <nav class="border-b border-gray-300 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="flex overflow-x-auto no-scrollbar">
+                <a href="#" class="nav-link active px-6 py-4 font-medium">Dashboard</a>
+                <a href="#" class="nav-link px-6 py-4 font-medium">Kundensuche</a>
+                <a href="#" class="nav-link px-6 py-4 font-medium">Fahrzeugmodelle</a>
+                <a href="#" class="nav-link px-6 py-4 font-medium">TCO-Kalkulator</a>
+                <a href="#" class="nav-link px-6 py-4 font-medium">Finanzierung</a>
+                <a href="#" class="nav-link px-6 py-4 font-medium">Analysen</a>
+                <a href="#" class="nav-link px-6 py-4 font-medium">Einstellungen</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Search Section -->
+        <section class="mb-12">
+            <div class="card p-6 rounded-lg">
+                <h3 class="text-xl font-bold mb-6">Kundenrecherche</h3>
+                <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+                    <div class="flex-1">
+                        <label for="searchType" class="block text-sm font-medium text-gray-700 mb-1">Suchtyp</label>
+                        <select id="searchType" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500">
+                            <option value="email">E-Mail</option>
+                            <option value="phone">Telefonnummer</option>
+                            <option value="name">Name</option>
+                            <option value="company">Unternehmen</option>
+                            <option value="uid">UID-Nummer</option>
+                        </select>
+                    </div>
+                    <div class="flex-grow">
+                        <label for="searchQuery" class="block text-sm font-medium text-gray-700 mb-1">Suchbegriff</label>
+                        <input type="text" id="searchQuery" placeholder="z.B. josegoncalves11@hotmail.com" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500">
+                    </div>
+                    <div class="self-end">
+                        <button class="btn-primary px-6 py-2 rounded flex items-center space-x-2">
+                            <i class="fas fa-search"></i>
+                            <span>Suchen</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="font-medium">Erweiterte Suchoptionen</h4>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm">Internationaler Abgleich</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="form-checkbox h-5 w-5" checked>
+                                <span>Handelsregister (Schweiz)</span>
+                            </label>
+                        </div>
+                        <div>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="form-checkbox h-5 w-5" checked>
+                                <span>ZEK / CRIF (Finanzstatus)</span>
+                            </label>
+                        </div>
+                        <div>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="form-checkbox h-5 w-5" checked>
+                                <span>Soziale Netzwerke</span>
+                            </label>
+                        </div>
+                        <div>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="form-checkbox h-5 w-5" checked>
+                                <span>Zeichnungsberechtigungen</span>
+                            </label>
+                        </div>
+                        <div>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="form-checkbox h-5 w-5" checked>
+                                <span>Betreibungsauszug</span>
+                            </label>
+                        </div>
+                        <div>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="form-checkbox h-5 w-5">
+                                <span>Immobilienbesitz</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sample Customer Profile -->
+        <section class="mb-12">
+            <div class="card p-6 rounded-lg">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 class="text-xl font-bold">Kundenprofil</h3>
+                    <div class="flex space-x-3">
+                        <button class="btn-outline py-1 px-3 rounded flex items-center space-x-1">
+                            <i class="fas fa-print"></i>
+                            <span>Drucken</span>
+                        </button>
+                        <button class="btn-outline py-1 px-3 rounded flex items-center space-x-1">
+                            <i class="fas fa-share-alt"></i>
+                            <span>Teilen</span>
+                        </button>
+                        <button class="btn-primary py-1 px-3 rounded flex items-center space-x-1">
+                            <i class="fas fa-save"></i>
+                            <span>Speichern</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Basic Info -->
+                    <div class="card p-4 rounded-lg border border-gray-300">
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="font-bold">Persönliche Daten</h4>
+                            <span class="bg-gray-800 text-white px-2 py-1 rounded text-xs">Verifiziert</span>
+                        </div>
+                        
+                        <div class="flex flex-col space-y-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium">Michael Müller</p>
+                                    <p class="text-sm text-gray-600">Privatperson</p>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 gap-2">
+                                <div>
+                                    <p class="text-xs text-gray-500">E-Mail</p>
+                                    <p class="text-sm"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c8a5a1aba0a9ada4e6a5bdada4a4adba88adb0a9a5b8a4ade6aba0">[email&#160;protected]</a></p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500">Telefon</p>
+                                    <p class="text-sm">+41 78 123 45 67</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500">Adresse</p>
+                                    <p class="text-sm">Bahnhofstrasse 42</p>
+                                    <p class="text-sm">8001 Zürich</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500">Geburtsdatum</p>
+                                    <p class="text-sm">15.05.1978</p>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <p class="text-xs text-gray-500">Kommunikationspräferenz</p>
+                                <div class="flex space-x-2 mt-1">
+                                    <span class="bg-gray-200 text-black text-xs px-2 py-1 rounded">E-Mail</span>
+                                    <span class="bg-gray-200 text-black text-xs px-2 py-1 rounded">WhatsApp</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Financial Info -->
+                    <div class="card p-4 rounded-lg border border-gray-300">
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="font-bold">Finanzdaten</h4>
+                            <span class="bg-gray-800 text-white px-2 py-1 rounded text-xs">ZEK / CRIF</span>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <p class="text-sm">Bonitätsbewertung</p>
+                                    <p class="text-sm font-medium">A+</p>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 90%"></div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <p class="text-xs text-gray-500">Einkommen</p>
+                                <p class="text-sm">CHF 145'000 / Jahr</p>
+                            </div>
+                            
+                            <div>
+                                <p class="text-xs text-gray-500">Bestehende Verpflichtungen</p>
+                                <p class="text-sm">Hypothek: CHF 650'000</p>
+                            </div>
+                            
+                            <div>
+                                <p class="text-xs text-gray-500">Kredit-Leasing-Limite (geschätzt)</p>
+                                <p class="text-sm">Bis CHF 2'500 / Monat</p>
+                            </div>
+                            
+                            <div>
+                                <p class="text-xs text-gray-500">Kredithistorie</p>
+                                <p class="text-sm">Keine negativen Einträge</p>
+                            </div>
+                            
+                            <div class="pt-2">
+                                <button class="w-full btn-outline py-2 rounded text-sm">
+                                    Vollständigen Finanzreport anzeigen
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interest & History -->
+                    <div class="card p-4 rounded-lg border border-gray-300">
+                        <h4 class="font-bold mb-4">Interessen & Historie</h4>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <p class="text-xs text-gray-500">Interessiert an Modellen</p>
+                                <div class="flex flex-wrap gap-2 mt-1">
+                                    <span class="bg-gray-200 text-black text-xs px-2 py-1 rounded">CADILLAC LYRIQ</span>
+                                    <span class="bg-gray-200 text-black text-xs px-2 py-1 rounded">CADILLAC OPTIQ</span>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <p class="text-xs text-gray-500">Besuche</p>
+                                <div class="mt-1 space-y-2">
+                                    <div class="flex justify-between text-sm">
+                                        <span>Website-Besuch (LYRIQ)</span>
+                                        <span>Vor 3 Tagen</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span>Showroom Zürich</span>
+                                        <span>12.04.2023</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <p class="text-xs text-gray-500">Aktuelle Fahrzeuge</p>
+                                <div class="mt-1 space-y-2">
+                                    <div class="flex justify-between text-sm">
+                                        <span>Tesla Model S</span>
+                                        <span>Seit 2020</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span>Mercedes GLE</span>
+                                        <span>2016-2020</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <p class="text-xs text-gray-500">Besondere Interessen</p>
+                                <div class="flex flex-wrap gap-2 mt-1">
+                                    <span class="bg-gray-200 text-black text-xs px-2 py-1 rounded">Technologie</span>
+                                    <span class="bg-gray-200 text-black text-xs px-2 py-1 rounded">Nachhaltigkeit</span>
+                                    <span class="bg-gray-200 text-black text-xs px-2 py-1 rounded">Premium</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CADILLAC EV Models -->
+        <section class="mb-12">
+            <div class="card p-6 rounded-lg">
+                <h3 class="text-xl font-bold mb-6">CADILLAC EV Modelle (Schweiz)</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- LYRIQ Model -->
+                    <div class="card p-4 rounded-lg border border-gray-300 hover:shadow-lg transition-all">
+                        <div class="flex justify-between mb-4">
+                            <h4 class="font-bold">CADILLAC LYRIQ</h4>
+                            <span class="bg-gray-800 text-white px-2 py-1 rounded text-xs">Verfügbar</span>
+                        </div>
+                        
+                        <div class="h-48 bg-gray-200 flex items-center justify-center mb-4 rounded">
+                            <i class="fas fa-car text-6xl text-gray-500"></i>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <p class="text-xs text-gray-500">Reichweite</p>
+                                    <p class="text-sm">Bis zu 500 km</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500">Ladedauer (DC)</p>
+                                    <p class="text-sm">30 Min. (10-80%)</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500">Leistung</p>
+                                    <p class="text-sm">340 kW (462 PS)</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500">0-100 km/h</p>
+                                    <p class="text-sm">4.9 Sekunden</p>
+                                </div>
+                            </div>
+                            
+                            <div class="pt-2">
+                                <p class="text-xs text-gray-500">Preis ab</p>
+                                <p class="text-lg font-bold">CHF 89'900</p>
+                            </div>
+                            
+                            <div class="flex space-x-2">
+                                <button class="flex-1 btn-primary py-2 rounded text-sm">TCO Berechnen</button>
+                                <button class="flex-1 btn-outline py-2 rounded text-sm">Details</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- CELESTIQ Model -->
+                    <div class="card p-4 rounded-lg border border-gray-300 hover:shadow-lg transition-all">
+                        <div class="flex justify-between mb-4">
+                            <h4 class="font-bold">CADILLAC CELESTIQ</h4>
+                            <span class="bg-gray-800 text-white px-2 py-1 rounded text-xs">Limitiert</span>
+                        </div>
+                        
+                        <div class="h-48 bg-gray-200 flex items-center justify-center mb-4 rounded">
+                            <i class="fas fa-car text-6xl text-gray-500"></i>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <p class="text-xs text-gray-500">Reichweite</p>
+                                    <p class="text-sm">Bis zu 480 km</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500">Ladedauer (DC)</p>
+                                    <p class="text-sm">35 Min. (10-80%)</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500">Leistung</p>
+                                    <p class="text-sm">447 kW (608 PS)</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500">0-100 km/h</p>
+                                    <p class="text-sm">3.8 Sekunden</p>
+                                </div>
+                            </div>
+                            
+                            <div class="pt-2">
+                                <p class="text-xs text-gray-500">Preis ab</p>
+                                <p class="text-lg font-bold">CHF 350'000</p>
+                            </div>
+                            
+                            <div class="flex space-x-2">
+                                <button class="flex-1 btn-primary py-2 rounded text-sm">TCO Berechnen</button>
+                                <button class="flex-1 btn-outline py-2 rounded text-sm">Details</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- OPTIQ Model -->
+                    <div class="card p-4 rounded-lg border border-gray-300 hover:shadow-lg transition-all">
+                        <div class="flex justify-between mb-4">
+                            <h4 class="font-bold">CADILLAC OPTIQ</h4>
+                            <span class="bg-gray-800 text-white px-2 py-1 rounded text-xs">Vorbestellbar</span>
+                        </div>
+                        
+                        <div class="h-48 bg-gray-200 flex items-center justify-center mb-4 rounded">
+                            <i class="fas fa-car text-6xl text-gray-500"></i>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <p class="text-xs text-gray-500">Reichweite</p>
+                                    <p class="text-sm">Bis zu 450 km</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500">Ladedauer (DC)</p>
+                                    <p class="text-sm">28 Min. (10-80%)</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500">Leistung</p>
+                                    <p class="text-sm">220 kW (299 PS)</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500">0-100 km/h</p>
+                                    <p class="text-sm">6.1 Sekunden</p>
+                                </div>
+                            </div>
+                            
+                            <div class="pt-2">
+                                <p class="text-xs text-gray-500">Preis ab</p>
+                                <p class="text-lg font-bold">CHF 67'900</p>
+                            </div>
+                            
+                            <div class="flex space-x-2">
+                                <button class="flex-1 btn-primary py-2 rounded text-sm">TCO Berechnen</button>
+                                <button class="flex-1 btn-outline py-2 rounded text-sm">Details</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TCO Calculator -->
+        <section class="mb-12">
+            <div class="card p-6 rounded-lg">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 class="text-xl font-bold">TCO Kalkulator (CADILLAC LYRIQ)</h3>
+                    <div class="flex space-x-2">
+                        <button class="btn-outline py-1 px-3 rounded flex items-center space-x-1">
+                            <i class="fas fa-download"></i>
+                            <span>Exportieren</span>
+                        </button>
+                        <button class="btn-primary py-1 px-3 rounded flex items-center space-x-1">
+                            <i class="fas fa-share-alt"></i>
+                            <span>Mit Kunde teilen</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- TCO Settings -->
+                    <div class="card p-4 rounded-lg border border-gray-300">
+                        <h4 class="font-medium mb-4">TCO Parameter</h4>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm mb-1">Fahrzeugmodell</label>
+                                <select class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500">
+                                    <option>CADILLAC LYRIQ Luxury</option>
+                                    <option>CADILLAC LYRIQ Sport</option>
+                                    <option>CADILLAC LYRIQ Premium</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm mb-1">Besitzdauer</label>
+                                <select class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500">
+                                    <option>4 Jahre</option>
+                                    <option>5 Jahre</option>
+                                    <option>6 Jahre</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm mb-1">Jährliche Kilometerleistung</label>
+                                <input type="number" value="15000" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm mb-1">Stromkosten pro kWh</label>
+                                <div class="flex">
+                                    <input type="number" value="0.22" step="0.01" class="w-full border border-gray-300 rounded-l px-3 py-2 focus:outline-none focus:border-gray-500">
+                                    <span class="bg-gray-200 px-3 py-2 rounded-r border-t border-r border-b border-gray-300">CHF</span>
+                                </div>
+                            </div>
+                            
+                            <div class="pt-2">
+                                <button class="w-full btn-primary py-2 rounded">
+                                    Berechnung aktualisieren
+                                </button>
+                            </div>
+                            
+                            <div class="border-t border-gray-300 pt-4">
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span>Strassenverkehrsabgabe</span>
+                                    <span class="font-medium">Befreit (EV)</span>
+                                </div>
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span>Versicherung (Vollkasko)</span>
+                                    <span class="font-medium">CHF 1'800/Jahr</span>
+                                </div>
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span>Wertverlust</span>
+                                    <span class="font-medium">35% nach 4 Jahren</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- TCO Chart -->
+                    <div class="lg:col-span-2 card p-4 rounded-lg border border-gray-300">
+                        <h4 class="font-medium mb-4">TCO Analyse</h4>
+                        
+                        <div class="chart-container mb-6">
+                            <canvas id="tcoChart"></canvas>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div class="p-3 bg-gray-100 rounded">
+                                <p class="text-xs text-gray-500">Anschaffung</p>
+                                <p class="text-lg font-medium">CHF 89'900</p>
+                            </div>
+                            <div class="p-3 bg-gray-100 rounded">
+                                <p class="text-xs text-gray-500">Energiekosten</p>
+                                <p class="text-lg font-medium">CHF 6'600</p>
+                                <p class="text-xs text-gray-500">für 4 Jahre</p>
+                            </div>
+                            <div class="p-3 bg-gray-100 rounded">
+                                <p class="text-xs text-gray-500">Versicherung</p>
+                                <p class="text-lg font-medium">CHF 7'200</p>
+                                <p class="text-xs text-gray-500">für 4 Jahre</p>
+                            </div>
+                            <div class="p-3 bg-gray-100 rounded">
+                                <p class="text-xs text-gray-500">Wartung</p>
+                                <p class="text-lg font-medium">CHF 2'400</p>
+                                <p class="text-xs text-gray-500">für 4 Jahre</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 p-4 bg-gray-100 rounded">
+                            <div class="flex justify-between mb-2">
+                                <h5 class="font-medium">Gesamtkosten (TCO) über 4 Jahre</h5>
+                                <p class="font-bold">CHF 106'100</p>
+                            </div>
+                            <div class="flex justify-between mb-2">
+                                <h5 class="font-medium">Monatliche Kosten</h5>
+                                <p class="font-bold">CHF 2'211</p>
+                            </div>
+                            <div class="flex justify-between">
+                                <h5 class="font-medium">Kosten pro km</h5>
+                                <p class="font-bold">CHF 0.44</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 bg-gray-100 p-4 rounded">
+                    <h4 class="font-medium mb-3">Vergleich mit Verbrennerfahrzeug</h4>
+                    <div class="chart-container">
+                        <canvas id="comparisonChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <h4 class="font-medium mb-3">Finanzierungsoptionen</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="border border-gray-300 p-4 rounded">
+                            <div class="flex justify-between mb-2">
+                                <h5 class="font-medium">Barkauf</h5>
+                                <span class="text-xs bg-gray-800 text-white px-2 py-1 rounded">Empfehlung</span>
+                            </div>
+                            <p class="text-lg font-bold mb-2">CHF 89'900</p>
+                            <p class="text-sm text-gray-600 mb-4">Einmalzahlung</p>
+                            <button class="w-full btn-outline py-2 rounded text-sm">Details anzeigen</button>
+                        </div>
+                        
+                        <div class="border border-gray-300 p-4 rounded">
+                            <h5 class="font-medium mb-2">Leasing</h5>
+                            <p class="text-lg font-bold mb-2">CHF 999 / Monat</p>
+                            <p class="text-sm text-gray-600 mb-4">48 Monate, 30% Anzahlung</p>
+                            <button class="w-full btn-outline py-2 rounded text-sm">Details anzeigen</button>
+                        </div>
+                        
+                        <div class="border border-gray-300 p-4 rounded">
+                            <h5 class="font-medium mb-2">Finanzierung</h5>
+                            <p class="text-lg font-bold mb-2">CHF 1'245 / Monat</p>
+                            <p class="text-sm text-gray-600 mb-4">60 Monate, 20% Anzahlung</p>
+                            <button class="w-full btn-outline py-2 rounded text-sm">Details anzeigen</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- AI Sales Strategy -->
+        <section class="mb-12">
+            <div class="card p-6 rounded-lg">
+                <h3 class="text-xl font-bold mb-6">KI-gestützte Verkaufsstrategie</h3>
+                
+                <div class="bg-gray-100 p-4 rounded mb-6">
+                    <div class="flex justify-between mb-4">
+                        <h4 class="font-medium">Kundenempfehlungen</h4>
+                        <span class="bg-gray-800 text-white px-2 py-1 rounded text-xs">Auf Kundendaten basierend</span>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-3">
+                            <i class="fas fa-lightbulb text-lg mt-1"></i>
+                            <div>
+                                <h5 class="font-medium">Primäre Empfehlung: CADILLAC LYRIQ Luxury</h5>
+                                <p class="text-sm text-gray-600">Basierend auf dem bisherigen Fahrzeugbesitz (Tesla Model S) und den finanziellen Möglichkeiten ist der LYRIQ eine optimale Wahl.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <i class="fas fa-tag text-lg mt-1"></i>
+                            <div>
+                                <h5 class="font-medium">Finanzierungsvorschlag</h5>
+                                <p class="text-sm text-gray-600">Der Kunde hat eine starke Bonität (A+) und könnte von einem Leasing mit niedrigem Zinssatz profitieren, speziell bei einer Laufzeit von 48 Monaten.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <i class="fas fa-chart-line text-lg mt-1"></i>
+                            <div>
+                                <h5 class="font-medium">Upselling-Potential</h5>
+                                <p class="text-sm text-gray-600">Höherwertige Ausstattungspakete mit Schwerpunkt auf Technologie und Konnektivität könnten für diesen Kunden interessant sein.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="card p-4 rounded-lg border border-gray-300">
+                        <h4 class="font-medium mb-4">Verkaufsargumente</h4>
+                        
+                        <div class="space-y-3">
+                            <div class="flex items-start space-x-3">
+                                <div class="min-w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-white">
+                                    <i class="fas fa-bolt"></i>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium">Nachhaltige Mobilität</h5>
+                                    <p class="text-sm text-gray-600">Vollelektrisch mit Schweizer Wasserkraft geladen - 97% CO2-Reduktion im Vergleich zum Verbrenner.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-3">
+                                <div class="min-w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-white">
+                                    <i class="fas fa-wallet"></i>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium">Kosteneffizienz</h5>
+                                    <p class="text-sm text-gray-600">Befreit von Strassenverkehrsabgaben und deutlich niedrigere Energiekosten im Vergleich zu Benzin.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-3">
+                                <div class="min-w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-white">
+                                    <i class="fas fa-tools"></i>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium">Wartungsarm</h5>
+                                    <p class="text-sm text-gray-600">Weniger bewegliche Teile bedeuten weniger Verschleiss und niedrigere Servicekosten.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-3">
+                                <div class="min-w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-white">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium">Premium-Garantie</h5>
+                                    <p class="text-sm text-gray-600">8 Jahre Garantie auf die Batterie und den Antriebsstrang, zusätzlich 3 Jahre Vollgarantie.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card p-4 rounded-lg border border-gray-300">
+                        <h4 class="font-medium mb-4">Nächste Schritte</h4>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="min-w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-white">
+                                    <span>1</span>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium">Probefahrt anbieten</h5>
+                                    <p class="text-sm text-gray-600">CADILLAC LYRIQ für eine Wochenendprobefahrt vorschlagen.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3">
+                                <div class="min-w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-white">
+                                    <span>2</span>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium">Persönliches TCO-Dokument zusenden</h5>
+                                    <p class="text-sm text-gray-600">Angepasste TCO-Berechnung per E-Mail mit Vergleich zu seinem Tesla Model S.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3">
+                                <div class="min-w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-white">
+                                    <span>3</span>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium">Ladeinfrastruktur besprechen</h5>
+                                    <p class="text-sm text-gray-600">Wallbox-Installation anbieten und Details zur Förderung in seiner Gemeinde vorstellen.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3">
+                                <div class="min-w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-white">
+                                    <span>4</span>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium">Finanzierungsoptionen vorstellen</h5>
+                                    <p class="text-sm text-gray-600">Spezielle Leasingangebote mit niedrigem Zinssatz für den LYRIQ präsentieren.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <button class="w-full btn-primary py-2 rounded flex items-center justify-center space-x-2">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Termin vereinbaren</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 border-t border-gray-300 py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <h4 class="font-bold mb-4">CADILLAC EV - Customer Intelligence System</h4>
+                    <p class="text-sm text-gray-600">Ein umfassendes Tool für den Verkauf von CADILLAC Elektrofahrzeugen in der Schweiz. Entwickelt für optimale Kundenberatung und datengestützte Verkaufsstrategien.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Rechtliches</h4>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li><a href="#" class="hover:underline">Datenschutzrichtlinie</a></li>
+                        <li><a href="#" class="hover:underline">Nutzungsbedingungen</a></li>
+                        <li><a href="#" class="hover:underline">Impressum</a></li>
+                        <li><a href="#" class="hover:underline">Haftungsausschluss</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Kontakt</h4>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li><i class="fas fa-map-marker-alt w-5"></i> Bahnhofstrasse 123, 8001 Zürich</li>
+                        <li><i class="fas fa-phone w-5"></i> +41 44 123 45 67</li>
+                        <li><i class="fas fa-envelope w-5"></i> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b5dcdbd3daf5d6d4d1dcd9d9d4d698c6d6ddc2d0dccf9bd6dd">[email&#160;protected]</a></li>
+                        <li><i class="fas fa-globe w-5"></i> www.cadillac-schweiz.ch</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-300 mt-6 pt-6 text-center text-sm text-gray-600">
+                <p>&copy; 2023 CADILLAC Schweiz. Alle Rechte vorbehalten.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // TCO Chart
+            var tcoCtx = document.getElementById('tcoChart').getContext('2d');
+            var tcoChart = new Chart(tcoCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Anschaffung', 'Energiekosten', 'Versicherung', 'Wartung', 'Wertverlust'],
+                    datasets: [{
+                        data: [89900, 6600, 7200, 2400, -31465],
+                        backgroundColor: [
+                            '#000000',
+                            '#333333',
+                            '#666666',
+                            '#999999',
+                            '#cccccc'
+                        ],
+                        borderColor: '#ffffff',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: '#000000',
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    var label = context.label || '';
+                                    var value = context.raw || 0;
+                                    return label + ': CHF ' + value.toLocaleString('de-CH');
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Comparison Chart
+            var comparisonCtx = document.getElementById('comparisonChart').getContext('2d');
+            var comparisonChart = new Chart(comparisonCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jahr 1', 'Jahr 2', 'Jahr 3', 'Jahr 4'],
+                    datasets: [
+                        {
+                            label: 'CADILLAC LYRIQ (Elektro)',
+                            data: [98300, 103800, 109300, 114800],
+                            backgroundColor: '#000000',
+                            borderColor: '#000000',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Vergleichbarer Verbrenner',
+                            data: [94500, 106200, 118900, 129800],
+                            backgroundColor: '#666666',
+                            borderColor: '#666666',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Kumulierte Kosten (CHF)',
+                                color: '#000000'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return 'CHF ' + value.toLocaleString('de-CH');
+                                },
+                                color: '#000000'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#000000'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: '#000000',
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    var label = context.dataset.label || '';
+                                    var value = context.raw || 0;
+                                    return label + ': CHF ' + value.toLocaleString('de-CH');
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"rayId":"966eabd1af309a60","serverTiming":{"name":{"cfExtPri":true,"cfEdge":true,"cfOrigin":true,"cfL4":true,"cfSpeedBrain":true,"cfCacheStatus":true}},"version":"2025.7.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
+</body>
+</html>
+    <script id="html_badge_script1">
+        window.__genspark_remove_badge_link = "https://www.genspark.ai/api/html_badge/" +
+            "remove_badge?token=To%2FBnjzloZ3UfQdcSaYfDnZjrUqW7NwTdvD1rXhq0FNc5p%2Fo7kBl%2FAyJaBKRydqv%2B8WzH1MyT3PhViH%2Bqkbye%2F60LCuBIz3LRcYxKXEsjeYFvb7KihF20szAYd95n%2F8SMxLRk7Pu1MsVHz4fcFtYSZFAFgCwG7XoVDg5fPYvg9msdI7USE8d%2BzlOVMXZEfNxTfSxa0EJxq6LqLhtzyaKyIZy%2FwsY3zRzPUVjcaQrp9D46mNEgOBKZy40%2FbuglTyhLxaz1yQF99Tk%2FokX1l2cTuxTvWnS9AcRDKFTwFharrhVAwj2hOJE71PFmjfovcBNVlqWvvprCJNNmnL1YylgiZMaj1tupn%2BGXboUb9rG7m0rLG7SalD5fwYPYWQt%2FgXRjaBLcR9use%2BYQNSIBjmXpbLhFiOxaYs7YBBlPtrx4yLAVC0V6NRHfveZ6m2yPqW10XzdFfJr2gf4VoKFbfbgYa1cRPgK9KHMMnGgnskTLyom2R58L1xssFw%2BCkdjtWMhLkqchct%2Fm466wEWLJ27f7A%3D%3D";
+        window.__genspark_locale = "de-DE";
+        window.__genspark_token = "To/BnjzloZ3UfQdcSaYfDnZjrUqW7NwTdvD1rXhq0FNc5p/o7kBl/AyJaBKRydqv+8WzH1MyT3PhViH+qkbye/60LCuBIz3LRcYxKXEsjeYFvb7KihF20szAYd95n/8SMxLRk7Pu1MsVHz4fcFtYSZFAFgCwG7XoVDg5fPYvg9msdI7USE8d+zlOVMXZEfNxTfSxa0EJxq6LqLhtzyaKyIZy/wsY3zRzPUVjcaQrp9D46mNEgOBKZy40/buglTyhLxaz1yQF99Tk/okX1l2cTuxTvWnS9AcRDKFTwFharrhVAwj2hOJE71PFmjfovcBNVlqWvvprCJNNmnL1YylgiZMaj1tupn+GXboUb9rG7m0rLG7SalD5fwYPYWQt/gXRjaBLcR9use+YQNSIBjmXpbLhFiOxaYs7YBBlPtrx4yLAVC0V6NRHfveZ6m2yPqW10XzdFfJr2gf4VoKFbfbgYa1cRPgK9KHMMnGgnskTLyom2R58L1xssFw+CkdjtWMhLkqchct/m466wEWLJ27f7A==";
+    </script>
+    
+    <script id="html_notice_dialog_script" src="https://www.genspark.ai/notice_dialog.js"></script>
+    
