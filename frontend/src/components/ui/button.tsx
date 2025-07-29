@@ -14,9 +14,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     
     const variants = {
       default: "bg-primary-900 text-white hover:bg-primary-800 active:bg-primary-700",
-      outline: "border border-primary-300 text-primary-900 hover:bg-primary-50 active:bg-primary-100",
-      ghost: "text-primary-900 hover:bg-primary-50 active:bg-primary-100",
-      link: "text-primary-900 underline-offset-4 hover:underline"
+          outline: "border border-gray-300 text-gray-900 hover:bg-gray-50 active:bg-gray-100",
+    ghost: "text-gray-900 hover:bg-gray-50 active:bg-gray-100",
+    link: "text-gray-900 underline-offset-4 hover:underline"
     };
     
     const sizes = {

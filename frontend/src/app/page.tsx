@@ -95,8 +95,8 @@ export default function Dashboard() {
         {/* Page header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-primary-900">Dashboard</h1>
-            <p className="text-primary-600 mt-1">
+            <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+            <p className="text-gray-600 mt-1">
               Überblick über Ihr CADILLAC EV Customer Intelligence System
             </p>
           </div>
@@ -114,22 +114,22 @@ export default function Dashboard() {
           {dashboardStats.map((stat, index) => (
             <Card key={index} className="hover:shadow-md transition-shadow">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-primary-600">
+                <CardTitle className="text-sm font-medium text-gray-600">
                   {stat.title}
                 </CardTitle>
-                <div className="h-4 w-4 bg-primary-400 rounded-sm"></div>
+                <div className="h-4 w-4 bg-gray-400 rounded-sm"></div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-primary-900">
+                <div className="text-2xl font-bold text-gray-900">
                   {typeof stat.value === 'number' ? formatNumber(stat.value) : stat.value}
                 </div>
-                <div className="flex items-center space-x-1 text-xs text-primary-600">
+                <div className="flex items-center space-x-1 text-xs text-gray-600">
                   <span className={stat.changeType === 'increase' ? 'text-green-600' : 'text-red-600'}>
                     {stat.changeType === 'increase' ? '↑' : '↓'} {Math.abs(stat.change)}%
                   </span>
                   <span>vs. letzter Monat</span>
                 </div>
-                <p className="text-xs text-primary-500 mt-1">
+                <p className="text-xs text-gray-500 mt-1">
                   {stat.description}
                 </p>
               </CardContent>
@@ -151,16 +151,16 @@ export default function Dashboard() {
                 {recentCustomers.map((customer) => (
                   <div key={customer.id} className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
-                        <span className="text-sm font-medium text-primary-900">
+                      <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                        <span className="text-sm font-medium text-gray-900">
                           {customer.name.charAt(0)}
                         </span>
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-primary-900">
+                        <p className="text-sm font-medium text-gray-900">
                           {customer.name}
                         </p>
-                        <p className="text-xs text-primary-500">
+                        <p className="text-xs text-gray-500">
                           {customer.email}
                         </p>
                       </div>
@@ -199,19 +199,19 @@ export default function Dashboard() {
                 {popularVehicles.map((vehicle, index) => (
                   <div key={index} className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-primary-900">
+                      <p className="text-sm font-medium text-gray-900">
                         {vehicle.model}
                       </p>
-                      <p className="text-xs text-primary-500">
+                      <p className="text-xs text-gray-500">
                         {vehicle.configurations} Konfigurationen
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-medium text-primary-900">
+                      <p className="text-sm font-medium text-gray-900">
                         {formatCurrency(vehicle.avgPrice)}
                       </p>
                       <div className="flex items-center justify-end space-x-1">
-                        <span className="text-xs text-primary-500">
+                        <span className="text-xs text-gray-500">
                           {vehicle.trend === 'up' ? '↑ Steigend' : '→ Stabil'}
                         </span>
                       </div>
@@ -242,19 +242,19 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Link href="/customers/new">
                 <Button variant="outline" className="w-full h-20 flex flex-col space-y-2">
-                  <div className="w-6 h-6 bg-primary-600 rounded-sm"></div>
+                  <div className="w-6 h-6 bg-gray-600 rounded-sm"></div>
                   <span>Neuer Kunde</span>
                 </Button>
               </Link>
               <Link href="/tco">
                 <Button variant="outline" className="w-full h-20 flex flex-col space-y-2">
-                  <div className="w-6 h-6 bg-primary-600 rounded-sm"></div>
+                  <div className="w-6 h-6 bg-gray-600 rounded-sm"></div>
                   <span>TCO berechnen</span>
                 </Button>
               </Link>
               <Link href="/vehicles/configure">
                 <Button variant="outline" className="w-full h-20 flex flex-col space-y-2">
-                  <div className="w-6 h-6 bg-primary-600 rounded-sm"></div>
+                  <div className="w-6 h-6 bg-gray-600 rounded-sm"></div>
                   <span>Fahrzeug konfigurieren</span>
                 </Button>
               </Link>

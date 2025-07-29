@@ -9,8 +9,8 @@ export interface BadgeProps
 function Badge({ className, variant = 'default', ...props }: BadgeProps) {
   const variants = {
     default: "bg-primary-900 text-white",
-    secondary: "bg-primary-100 text-primary-900",
-    outline: "border border-primary-300 text-primary-900",
+    secondary: "bg-gray-100 text-gray-900",
+    outline: "border border-gray-300 text-gray-900",
     success: "bg-primary-800 text-white",
     warning: "bg-primary-600 text-white",
     error: "bg-primary-900 text-white"
