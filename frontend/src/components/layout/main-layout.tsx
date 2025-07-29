@@ -36,7 +36,7 @@ export function MainLayout({ children }: MainLayoutProps) {
         </main>
         
         {/* Footer */}
-        <footer className="bg-white border-t border-primary-200 py-4 px-6">
+        <footer className="bg-white border-t border-gray-200 py-4 px-6">
           <div className="max-w-7xl mx-auto flex items-center justify-between text-sm text-primary-500">
             <div>
               © 2024 CADILLAC Switzerland. Alle Rechte vorbehalten.

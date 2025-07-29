@@ -176,7 +176,7 @@ export default function Dashboard() {
                   </div>
                 ))}
               </div>
-              <div className="mt-4 pt-4 border-t border-primary-200">
+              <div className="mt-4 pt-4 border-t border-gray-200">
                 <Link href="/customers">
                   <Button variant="ghost" className="w-full">
                     Alle Kunden anzeigen
@@ -219,7 +219,7 @@ export default function Dashboard() {
                   </div>
                 ))}
               </div>
-              <div className="mt-4 pt-4 border-t border-primary-200">
+              <div className="mt-4 pt-4 border-t border-gray-200">
                 <Link href="/vehicles">
                   <Button variant="ghost" className="w-full">
                     Alle Fahrzeuge anzeigen

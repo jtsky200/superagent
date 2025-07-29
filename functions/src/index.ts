@@ -3,7 +3,6 @@ import * as admin from 'firebase-admin';
 import * as express from 'express';
 import * as cors from 'cors';
 import { OpenAI } from 'openai';
-import axios from 'axios';
 
 // Initialize Firebase Admin
 admin.initializeApp();
@@ -81,7 +80,7 @@ app.post('/analyze-customer', async (req, res) => {
       model: 'gpt-4-turbo-preview'
     });
 
-    res.json({
+    return res.json({
       success: true,
       analysis: analysis,
       analysisId: analysisRef.id
@@ -89,7 +88,7 @@ app.post('/analyze-customer', async (req, res) => {
 
   } catch (error) {
     console.error('Error in analyze-customer:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -106,8 +105,11 @@ app.post('/calculate-tco', async (req, res) => {
       return res.status(404).json({ error: 'Customer or vehicle not found' });
     }
 
-    const customer = customerDoc.data();
     const vehicle = vehicleDoc.data();
+    
+    if (!vehicle) {
+      return res.status(404).json({ error: 'Vehicle data not found' });
+    }
 
     // Calculate TCO (simplified version)
     const basePrice = vehicle.basePriceChf || 85000;
@@ -153,7 +155,7 @@ app.post('/calculate-tco', async (req, res) => {
     // Save to Firestore
     const tcoRef = await db.collection('tco_calculations').add(tcoCalculation);
 
-    res.json({
+    return res.json({
       success: true,
       tcoCalculation: {
         ...tcoCalculation,
@@ -163,7 +165,7 @@ app.post('/calculate-tco', async (req, res) => {
 
   } catch (error) {
     console.error('Error in calculate-tco:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -196,7 +198,7 @@ app.get('/analytics/:customerId', async (req, res) => {
       ...doc.data()
     }));
 
-    res.json({
+    return res.json({
       success: true,
       analytics: {
         analyses,
@@ -208,13 +210,13 @@ app.get('/analytics/:customerId', async (req, res) => {
 
   } catch (error) {
     console.error('Error in analytics:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: 'Internal server error' });
   }
 });
 
 // Health check
 app.get('/health', (req, res) => {
-  res.json({
+  return res.json({
     status: 'healthy',
     service: 'CADILLAC EV CIS Firebase Functions',
     timestamp: new Date().toISOString()
@@ -227,7 +229,7 @@ export const api = functions.https.onRequest(app);
 // Firestore triggers
 export const onCustomerCreated = functions.firestore
   .document('customers/{customerId}')
-  .onCreate(async (snap, context) => {
+  .onCreate(async (snap: functions.firestore.QueryDocumentSnapshot, context: functions.EventContext) => {
     const customerData = snap.data();
     console.log('New customer created:', customerData);
     
@@ -239,7 +241,7 @@ export const onCustomerCreated = functions.firestore
 
 export const onTcoCalculationCreated = functions.firestore
   .document('tco_calculations/{calculationId}')
-  .onCreate(async (snap, context) => {
+  .onCreate(async (snap: functions.firestore.QueryDocumentSnapshot, context: functions.EventContext) => {
     const tcoData = snap.data();
     console.log('New TCO calculation created:', tcoData);
     

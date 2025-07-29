@@ -23,6 +23,7 @@ const config: Config = {
           50: '#e6e6e6',
           0: '#ffffff', // Pure white
         },
+
         // Semantic colors using monochrome palette
         background: '#ffffff',
         foreground: '#000000',

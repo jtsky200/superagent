@@ -40,12 +40,12 @@ export function Sidebar() {
       {/* Sidebar */}
       <div
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-primary-200 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0",
+          "fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0",
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         {/* Sidebar header */}
-        <div className="flex items-center justify-between h-16 px-6 border-b border-primary-200">
+        <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
           <Link href="/" className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-primary-900 rounded-sm flex items-center justify-center">
               <span className="text-white font-bold text-sm">C</span>
@@ -100,7 +100,7 @@ export function Sidebar() {
         </nav>
 
         {/* Sidebar footer */}
-        <div className="p-4 border-t border-primary-200">
+        <div className="p-4 border-t border-gray-200">
           <div className="bg-primary-50 rounded-lg p-4">
             <h3 className="text-sm font-medium text-primary-900 mb-1">
               CADILLAC EV CIS
