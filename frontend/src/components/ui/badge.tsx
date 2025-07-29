@@ -8,12 +8,12 @@ export interface BadgeProps
 
 function Badge({ className, variant = 'default', ...props }: BadgeProps) {
   const variants = {
-    default: "bg-primary-900 text-white",
+          default: "bg-gray-900 text-white",
     secondary: "bg-gray-100 text-gray-900",
     outline: "border border-gray-300 text-gray-900",
-    success: "bg-primary-800 text-white",
-    warning: "bg-primary-600 text-white",
-    error: "bg-primary-900 text-white"
+          success: "bg-green-600 text-white",
+      warning: "bg-yellow-600 text-white",
+      error: "bg-red-600 text-white"
   };
 
   return (

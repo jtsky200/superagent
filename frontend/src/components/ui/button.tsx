@@ -10,10 +10,10 @@ export interface ButtonProps
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'default', size = 'md', loading = false, children, disabled, ...props }, ref) => {
-    const baseClasses = "inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
+    const baseClasses = "inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
     
     const variants = {
-      default: "bg-primary-900 text-white hover:bg-primary-800 active:bg-primary-700",
+              default: "bg-gray-900 text-white hover:bg-gray-800 active:bg-gray-700",
           outline: "border border-gray-300 text-gray-900 hover:bg-gray-50 active:bg-gray-100",
     ghost: "text-gray-900 hover:bg-gray-50 active:bg-gray-100",
     link: "text-gray-900 underline-offset-4 hover:underline"

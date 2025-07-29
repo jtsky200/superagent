@@ -29,10 +29,10 @@ export function Header() {
         </Button>
         
         <Link href="/" className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-primary-900 rounded-sm flex items-center justify-center">
+          <div className="w-8 h-8 bg-gray-900 rounded-sm flex items-center justify-center">
             <span className="text-white font-bold text-sm">C</span>
           </div>
-          <span className="font-bold text-primary-900 text-lg hidden sm:block">
+                      <span className="font-bold text-gray-900 text-lg hidden sm:block">
             CADILLAC EV CIS
           </span>
         </Link>
@@ -58,7 +58,7 @@ export function Header() {
         {/* User menu */}
         {user ? (
           <div className="flex items-center space-x-2">
-            <span className="text-sm text-primary-900 hidden sm:block">
+            <span className="text-sm text-gray-900 hidden sm:block">
               {user.firstName} {user.lastName}
             </span>
             <Button variant="ghost" size="sm" onClick={handleLogout}>
