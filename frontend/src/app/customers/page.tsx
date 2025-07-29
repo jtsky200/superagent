@@ -119,8 +119,8 @@ export default function CustomersPage() {
         {/* Page header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-primary-900">Kunden</h1>
-            <p className="text-primary-600 mt-1">
+            <h1 className="text-3xl font-bold text-gray-900">Kunden</h1>
+            <p className="text-gray-600 mt-1">
               Verwalten Sie Ihre CADILLAC EV Kunden
             </p>
           </div>
@@ -137,7 +137,7 @@ export default function CustomersPage() {
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex-1">
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary-400">🔍</span>
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">🔍</span>
                   <Input
                     placeholder="Kunden suchen..."
                     value={searchQuery}
@@ -147,11 +147,11 @@ export default function CustomersPage() {
                 </div>
               </div>
               <div className="flex items-center space-x-2">
-                <span className="text-primary-400">🔽</span>
+                <span className="text-gray-400">🔽</span>
                 <select
                   value={filterType}
                   onChange={(e) => setFilterType(e.target.value as any)}
-                  className="px-3 py-2 border border-primary-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-300"
+                                      className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
                 >
                   <option value="all">Alle Kunden</option>
                   <option value="private">Privatkunden</option>
