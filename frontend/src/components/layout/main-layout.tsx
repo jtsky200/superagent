@@ -3,7 +3,7 @@
 import React from 'react';
 import { Header } from './header';
 import { Sidebar } from './sidebar';
-import { useUiStore } from '@/lib/store';
+// import { useUiStore } from '@/lib/store'; // Temporarily disabled
 import { cn } from '@/lib/utils';
 
 interface MainLayoutProps {
@@ -11,7 +11,7 @@ interface MainLayoutProps {
 }
 
 export function MainLayout({ children }: MainLayoutProps) {
-  const { sidebarOpen } = useUiStore();
+  // const { sidebarOpen } = useUiStore(); // Temporarily disabled
 
   return (
     <div className="min-h-screen bg-gray-50">

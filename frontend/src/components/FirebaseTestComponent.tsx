@@ -12,7 +12,7 @@ export default function FirebaseTestComponent() {
     const testFirebase = async () => {
       try {
         // Test Firestore connection
-        const querySnapshot = await getDocs(collection(db, 'test'));
+        await getDocs(collection(db, 'test'));
         setStatus('✅ Firebase connection successful!');
         
         // Get list of collections (this is just for testing)
