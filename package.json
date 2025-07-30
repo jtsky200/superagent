@@ -16,6 +16,7 @@
     "build:frontend": "cd frontend && npm run build",
     "build:functions": "cd functions && npm run build",
     "build:full": "npm run build:frontend && npm run build:functions",
+
     "start": "concurrently \"npm run start:frontend\" \"npm run start:firebase\"",
     "start:frontend": "cd frontend && npm start",
     "start:firebase": "firebase emulators:start --only hosting",
