@@ -1,20 +1,10 @@
-import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { metadata, viewport } from "./metadata";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "CADILLAC EV CIS - Customer Intelligence System",
-  description: "Customer Intelligence System für CADILLAC Elektrofahrzeuge in der Schweiz",
-  keywords: ["CADILLAC", "EV", "Elektrofahrzeuge", "Schweiz", "CRM", "TCO"],
-  authors: [{ name: "CADILLAC Switzerland" }],
-};
-
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-};
+export { metadata, viewport };
 
 export default function RootLayout({
   children,
