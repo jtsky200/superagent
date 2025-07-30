@@ -167,11 +167,11 @@ export default function CustomersPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Gesamtkunden</CardTitle>
-              <span className="text-primary-400">👥</span>
+              <span className="text-gray-400">👥</span>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{customers.length}</div>
-              <p className="text-xs text-primary-500">
+              <p className="text-xs text-gray-500">
                 Aktive Kunden im System
               </p>
             </CardContent>
@@ -180,13 +180,13 @@ export default function CustomersPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Privatkunden</CardTitle>
-              <span className="text-primary-400">👤</span>
+              <span className="text-gray-400">👤</span>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
                 {customers.filter(c => c.customerType === 'private').length}
               </div>
-              <p className="text-xs text-primary-500">
+              <p className="text-xs text-gray-500">
                 Privatpersonen
               </p>
             </CardContent>
@@ -195,13 +195,13 @@ export default function CustomersPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Geschäftskunden</CardTitle>
-              <span className="text-primary-400">🏢</span>
+              <span className="text-gray-400">🏢</span>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
                 {customers.filter(c => c.customerType === 'business').length}
               </div>
-              <p className="text-xs text-primary-500">
+              <p className="text-xs text-gray-500">
                 Unternehmen
               </p>
             </CardContent>
@@ -221,19 +221,19 @@ export default function CustomersPage() {
               {filteredCustomers.map((customer) => (
                 <div
                   key={customer.id}
-                  className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-primary-50 transition-colors"
+                  className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   <div className="flex items-center space-x-4">
-                    <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
+                    <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
                       <span className="text-lg">
                         {customer.customerType === 'business' ? '🏢' : '👤'}
                       </span>
                     </div>
                     <div>
-                      <h3 className="font-medium text-primary-900">
+                      <h3 className="font-medium text-gray-900">
                         {getCustomerDisplayName(customer)}
                       </h3>
-                      <p className="text-sm text-primary-500">
+                      <p className="text-sm text-gray-500">
                         {getCustomerSubtitle(customer)}
                       </p>
                       <div className="flex items-center space-x-2 mt-1">
@@ -243,7 +243,7 @@ export default function CustomersPage() {
                         <Badge variant="outline">
                           {customer.canton}
                         </Badge>
-                        <span className="text-xs text-primary-400">
+                        <span className="text-xs text-gray-400">
                           {customer.city}
                         </span>
                       </div>
@@ -251,7 +251,7 @@ export default function CustomersPage() {
                   </div>
                   
                   <div className="flex items-center space-x-2">
-                    <span className="text-sm text-primary-500">
+                    <span className="text-sm text-gray-500">
                       {formatDate(new Date(customer.createdAt))}
                     </span>
                     <div className="flex items-center space-x-1">
@@ -275,11 +275,11 @@ export default function CustomersPage() {
               
               {filteredCustomers.length === 0 && (
                 <div className="text-center py-12">
-                  <div className="text-6xl text-primary-300 mb-4">👥</div>
-                  <h3 className="mt-2 text-sm font-medium text-primary-900">
+                  <div className="text-6xl text-gray-300 mb-4">👥</div>
+                  <h3 className="mt-2 text-sm font-medium text-gray-900">
                     Keine Kunden gefunden
                   </h3>
-                  <p className="mt-1 text-sm text-primary-500">
+                  <p className="mt-1 text-sm text-gray-500">
                     {searchQuery ? 'Versuchen Sie eine andere Suche.' : 'Erstellen Sie Ihren ersten Kunden.'}
                   </p>
                   {!searchQuery && (
