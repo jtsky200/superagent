@@ -9,6 +9,25 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Standard Tailwind colors
+        white: '#ffffff',
+        black: '#000000',
+        red: {
+          500: '#ef4444',
+          600: '#dc2626',
+        },
+        green: {
+          500: '#22c55e',
+          600: '#16a34a',
+        },
+        yellow: {
+          500: '#eab308',
+          600: '#ca8a04',
+        },
+        blue: {
+          500: '#3b82f6',
+          600: '#2563eb',
+        },
         // Monochrome color palette (black to white)
         primary: {
           900: '#000000', // Pure black

@@ -29,11 +29,11 @@
 
 @layer base {
   * {
-    @apply border-gray-500;
+    /* Default border removed to avoid Tailwind CSS warnings */
   }
   
   body {
-    @apply bg-background text-foreground;
+    @apply bg-white text-gray-900;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
   
