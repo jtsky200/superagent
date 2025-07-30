@@ -47,16 +47,6 @@ INSERT INTO users (
     'User',
     'user',
     true
-),
-
--- ROOLL OZ user (password: rooll123)
-(
-    'rooll.oz@cadillac.ch',
-    '$2b$10$rOzJqQZQZQZQZQZQZQZQZOzJqQZQZQZQZQZQZQZQZOzJqQZQZQZQZQ',
-    'ROOLL',
-    'OZ',
-    'rooll_oz',
-    true
 );
 
 -- Update timestamps

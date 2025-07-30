@@ -7,7 +7,7 @@ interface User {
   email: string;
   firstName: string;
   lastName: string;
-  role: 'admin' | 'user' | 'manager' | 'rooll_oz';
+  role: string;
 }
 
 interface Customer {
