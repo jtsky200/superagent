@@ -1,9 +1,6 @@
-'use client';
-
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { useEffect, useState } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,16 +21,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return null;
-  }
-
   return (
     <html lang="de" className="h-full" suppressHydrationWarning>
       <body className={`${inter.className} h-full antialiased`} suppressHydrationWarning>
