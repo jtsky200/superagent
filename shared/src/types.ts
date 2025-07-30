@@ -1,3 +1,24 @@
+// ===== USER TYPES =====
+
+export enum UserRole {
+  ADMIN = 'admin',
+  USER = 'user',
+  MANAGER = 'manager',
+  ROOLL_OZ = 'rooll_oz',
+}
+
+export interface User {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: UserRole;
+  isActive: boolean;
+  lastLoginAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 // ===== CUSTOMER TYPES =====
 
 export interface Customer {
