@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postbuild": "cp -r .next/static .next/standalone/.next/ 2>/dev/null || echo 'Static files handled by Next.js'"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.6",

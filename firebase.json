@@ -1,53 +1,17 @@
 {
-  "hosting": {
-    "public": "frontend/out",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [
+  "apphosting": {
+    "source": "./frontend",
+    "build": {
+      "commands": [
+        "npm install",
+        "npm run build"
+      ]
+    },
+    "env": [
       {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ],
-    "headers": [
-      {
-        "source": "**/*.@(js|css)",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "max-age=31536000"
-          }
-        ]
+        "variable": "NEXT_PUBLIC_API_BASE_URL",
+        "value": "https://your-backend-url.com/api"
       }
     ]
-  },
-  "firestore": {
-    "rules": "firestore.rules",
-    "indexes": "firestore.indexes.json"
-  },
-  "functions": {
-    "source": "functions",
-    "runtime": "nodejs18"
-  },
-  "emulators": {
-    "auth": {
-      "port": 9099
-    },
-    "functions": {
-      "port": 5001
-    },
-    "firestore": {
-      "port": 8080
-    },
-    "hosting": {
-      "port": 5000
-    },
-    "ui": {
-      "enabled": true,
-      "port": 4000
-    }
   }
-} 
+}
