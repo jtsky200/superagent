@@ -1,0 +1,604 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "🇨🇭 CADILLAC EV CIS - Swiss Market Overview",
+    "tags": ["cadillac-ev", "switzerland", "overview", "production"],
+    "style": "dark",
+    "timezone": "Europe/Zurich",
+    "refresh": "30s",
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "🚗 Swiss Market KPIs",
+        "type": "stat",
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 0},
+        "targets": [
+          {
+            "expr": "cadillac_ev_active_users_total",
+            "legendFormat": "Active Users",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(cadillac_ev_tco_calculations_total[1h]) * 24",
+            "legendFormat": "Daily TCO Calculations",
+            "refId": "B"
+          },
+          {
+            "expr": "cadillac_ev_swiss_cantons_active_total",
+            "legendFormat": "Active Cantons",
+            "refId": "C"
+          },
+          {
+            "expr": "sum(rate(cadillac_ev_revenue_chf_total[1h])) * 24",
+            "legendFormat": "Daily Revenue (CHF)",
+            "refId": "D"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "palette-classic"},
+            "custom": {
+              "displayMode": "basic",
+              "orientation": "horizontal"
+            },
+            "mappings": [],
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "red", "value": 80}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "🏔️ Swiss Cantons Activity Heatmap",
+        "type": "heatmap",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+        "targets": [
+          {
+            "expr": "sum by (canton) (rate(cadillac_ev_requests_total[5m]))",
+            "legendFormat": "{{ canton }}",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "calculate": false,
+          "calculation": {},
+          "cellGap": 1,
+          "cellValues": {},
+          "color": {
+            "exponent": 0.5,
+            "fill": "#FF0000",
+            "mode": "spectrum",
+            "reverse": false,
+            "scale": "exponential",
+            "scheme": "Blues",
+            "steps": 64
+          },
+          "exemplars": {
+            "color": "rgba(255,0,255,0.7)"
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "📊 Service Health Status",
+        "type": "table",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+        "targets": [
+          {
+            "expr": "up{job=~\"cadillac-ev-.*\"}",
+            "legendFormat": "{{ job }}",
+            "refId": "A",
+            "format": "table",
+            "instant": true
+          }
+        ],
+        "transformations": [
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "Time": true,
+                "__name__": true
+              },
+              "indexByName": {},
+              "renameByName": {
+                "job": "Service",
+                "Value": "Status"
+              }
+            }
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "align": "center",
+              "displayMode": "color-background"
+            },
+            "mappings": [
+              {
+                "options": {
+                  "0": {
+                    "color": "red",
+                    "index": 0,
+                    "text": "DOWN"
+                  },
+                  "1": {
+                    "color": "green",
+                    "index": 1,
+                    "text": "UP"
+                  }
+                },
+                "type": "value"
+              }
+            ],
+            "thresholds": {
+              "steps": [
+                {"color": "red", "value": 0},
+                {"color": "green", "value": 1}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "⚡ API Response Times by Service",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job=~\"cadillac-ev-.*\"}[5m]))",
+            "legendFormat": "{{ job }} - 95th percentile",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.50, rate(http_request_duration_seconds_bucket{job=~\"cadillac-ev-.*\"}[5m]))",
+            "legendFormat": "{{ job }} - 50th percentile",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "palette-classic"},
+            "custom": {
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 10,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "vis": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "unit": "s",
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 0.5},
+                {"color": "red", "value": 1.0}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "🔥 Error Rates by Service",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16},
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{status=~\"5..\",job=~\"cadillac-ev-.*\"}[5m]) / rate(http_requests_total{job=~\"cadillac-ev-.*\"}[5m]) * 100",
+            "legendFormat": "{{ job }} - Error Rate %",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "palette-classic"},
+            "custom": {
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 10,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "vis": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "line"
+              }
+            },
+            "unit": "percent",
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 1},
+                {"color": "red", "value": 5}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 6,
+        "title": "🤖 AI Services Performance",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 24},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(cadillac_ev_ai_request_duration_seconds_bucket[5m]))",
+            "legendFormat": "AI Response Time (95th percentile)",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(cadillac_ev_ai_requests_total[5m])",
+            "legendFormat": "AI Requests/sec",
+            "refId": "B"
+          },
+          {
+            "expr": "rate(cadillac_ev_ai_provider_failover_total[5m])",
+            "legendFormat": "Provider Failovers/sec",
+            "refId": "C"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "💰 Swiss TCO Calculations by Canton",
+        "type": "bargauge",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 24},
+        "targets": [
+          {
+            "expr": "sum by (canton) (rate(cadillac_ev_tco_calculations_total[1h]))",
+            "legendFormat": "{{ canton }}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "palette-classic"},
+            "custom": {
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "orientation": "horizontal"
+            },
+            "mappings": [],
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "red", "value": 80}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 8,
+        "title": "🗄️ Database Performance",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 32},
+        "targets": [
+          {
+            "expr": "pg_stat_database_tup_returned{datname=\"cadillac_ev_cis_prod\"} / pg_stat_database_tup_fetched{datname=\"cadillac_ev_cis_prod\"} * 100",
+            "legendFormat": "Cache Hit Ratio %",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(pg_stat_database_xact_commit{datname=\"cadillac_ev_cis_prod\"}[5m])",
+            "legendFormat": "Transactions/sec",
+            "refId": "B"
+          },
+          {
+            "expr": "pg_stat_activity_count{datname=\"cadillac_ev_cis_prod\",state=\"active\"}",
+            "legendFormat": "Active Connections",
+            "refId": "C"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "🚀 Redis Cache Performance",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 32},
+        "targets": [
+          {
+            "expr": "redis_keyspace_hits_total / (redis_keyspace_hits_total + redis_keyspace_misses_total) * 100",
+            "legendFormat": "Cache Hit Rate %",
+            "refId": "A"
+          },
+          {
+            "expr": "redis_memory_used_bytes",
+            "legendFormat": "Memory Used",
+            "refId": "B"
+          },
+          {
+            "expr": "rate(redis_commands_processed_total[5m])",
+            "legendFormat": "Commands/sec",
+            "refId": "C"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "🔒 Swiss Compliance Status",
+        "type": "stat",
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 40},
+        "targets": [
+          {
+            "expr": "cadillac_ev_dsgvo_compliance_score",
+            "legendFormat": "DSGVO Compliance Score",
+            "refId": "A"
+          },
+          {
+            "expr": "cadillac_ev_data_retention_compliance",
+            "legendFormat": "Data Retention Compliance",
+            "refId": "B"
+          },
+          {
+            "expr": "cadillac_ev_ssl_certificate_days_until_expiry",
+            "legendFormat": "SSL Certificate Days Left",
+            "refId": "C"
+          },
+          {
+            "expr": "cadillac_ev_swiss_api_integration_health",
+            "legendFormat": "Swiss API Health",
+            "refId": "D"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "custom": {
+              "displayMode": "basic",
+              "orientation": "horizontal"
+            },
+            "mappings": [
+              {
+                "options": {
+                  "0": {
+                    "color": "red",
+                    "index": 0,
+                    "text": "NON-COMPLIANT"
+                  },
+                  "1": {
+                    "color": "green",
+                    "index": 1,
+                    "text": "COMPLIANT"
+                  }
+                },
+                "type": "value"
+              }
+            ],
+            "thresholds": {
+              "steps": [
+                {"color": "red", "value": null},
+                {"color": "yellow", "value": 0.8},
+                {"color": "green", "value": 0.95}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 11,
+        "title": "🌍 Swiss Language Distribution",
+        "type": "piechart",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 48},
+        "targets": [
+          {
+            "expr": "sum by (language) (cadillac_ev_user_language_total)",
+            "legendFormat": "{{ language }}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "palette-classic"},
+            "custom": {
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "vis": false
+              }
+            },
+            "mappings": [
+              {
+                "options": {
+                  "de": {
+                    "color": "red",
+                    "index": 0,
+                    "text": "Deutsch"
+                  },
+                  "fr": {
+                    "color": "blue",
+                    "index": 1,
+                    "text": "Français"
+                  },
+                  "it": {
+                    "color": "green",
+                    "index": 2,
+                    "text": "Italiano"
+                  },
+                  "en": {
+                    "color": "yellow",
+                    "index": 3,
+                    "text": "English"
+                  }
+                },
+                "type": "value"
+              }
+            ]
+          }
+        },
+        "options": {
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"],
+            "fields": ""
+          },
+          "pieType": "pie",
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          },
+          "legend": {
+            "displayMode": "visible",
+            "placement": "right"
+          }
+        }
+      },
+      {
+        "id": 12,
+        "title": "📱 Customer Journey Funnel",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 48},
+        "targets": [
+          {
+            "expr": "rate(cadillac_ev_page_views_total{page=\"landing\"}[5m])",
+            "legendFormat": "Landing Page Views",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(cadillac_ev_vehicle_configurator_starts_total[5m])",
+            "legendFormat": "Vehicle Configurator Starts",
+            "refId": "B"
+          },
+          {
+            "expr": "rate(cadillac_ev_tco_calculations_total[5m])",
+            "legendFormat": "TCO Calculations",
+            "refId": "C"
+          },
+          {
+            "expr": "rate(cadillac_ev_lead_submissions_total[5m])",
+            "legendFormat": "Lead Submissions",
+            "refId": "D"
+          }
+        ]
+      }
+    ],
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": "-- Grafana --",
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        },
+        {
+          "datasource": "Prometheus",
+          "enable": true,
+          "expr": "ALERTS{alertname=~\".*Swiss.*\",alertstate=\"firing\"}",
+          "iconColor": "red",
+          "name": "Swiss Compliance Alerts",
+          "titleFormat": "{{ alertname }}",
+          "textFormat": "{{ summary }}"
+        }
+      ]
+    },
+    "templating": {
+      "list": [
+        {
+          "allValue": null,
+          "current": {
+            "selected": false,
+            "text": "All",
+            "value": "$__all"
+          },
+          "datasource": "Prometheus",
+          "definition": "label_values(up{job=~\"cadillac-ev-.*\"}, job)",
+          "hide": 0,
+          "includeAll": true,
+          "label": "Service",
+          "multi": true,
+          "name": "service",
+          "options": [],
+          "query": {
+            "query": "label_values(up{job=~\"cadillac-ev-.*\"}, job)",
+            "refId": "StandardVariableQuery"
+          },
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 0,
+          "tagValuesQuery": "",
+          "tagsQuery": "",
+          "type": "query",
+          "useTags": false
+        },
+        {
+          "allValue": null,
+          "current": {
+            "selected": false,
+            "text": "All",
+            "value": "$__all"
+          },
+          "datasource": "Prometheus",
+          "definition": "label_values(cadillac_ev_requests_total, canton)",
+          "hide": 0,
+          "includeAll": true,
+          "label": "Canton",
+          "multi": true,
+          "name": "canton",
+          "options": [],
+          "query": {
+            "query": "label_values(cadillac_ev_requests_total, canton)",
+            "refId": "StandardVariableQuery"
+          },
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 1,
+          "tagValuesQuery": "",
+          "tagsQuery": "",
+          "type": "query",
+          "useTags": false
+        }
+      ]
+    }
+  }
+}

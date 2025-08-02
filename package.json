@@ -1,61 +1,39 @@
 {
   "name": "cadillac-ev-cis",
   "version": "1.0.0",
-  "description": "CADILLAC EV Customer Intelligence System für die Schweiz",
-  "private": true,
-  "workspaces": [
-    "frontend",
-    "backend",
-    "shared"
-  ],
+  "description": "Cadillac EV Customer Intelligence System - Full Stack Application",
   "scripts": {
-    "dev": "npm run dev:frontend",
-    "dev:frontend": "cd frontend && npm run dev",
-    "dev:firebase": "firebase emulators:start",
-    "build": "npm run build:frontend",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\" \"npm run dev:ai\" --names \"Backend,Frontend,AI\" --prefix-colors \"blue,green,yellow\"",
+    "dev:backend": "cd backend && npm run start:dev",
+    "dev:frontend": "cd frontend && npm run dev", 
+    "dev:ai": "cd ai-services && python src/main.py",
+    "start": "npm run dev",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "cd backend && npm run build",
     "build:frontend": "cd frontend && npm run build",
-    "build:functions": "cd functions && npm run build",
-    "build:full": "npm run build:frontend && npm run build:functions",
-
-    "start": "npm run start:frontend",
-    "start:frontend": "cd frontend && npm start",
-    "start:firebase": "firebase emulators:start --only hosting",
-    "test": "npm run test:frontend && npm run test:functions",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "cd backend && npm test",
     "test:frontend": "cd frontend && npm test",
-    "test:functions": "cd functions && npm test",
-    "lint": "npm run lint:frontend && npm run lint:functions",
-    "lint:frontend": "cd frontend && npm run lint",
-    "lint:functions": "cd functions && npm run lint",
-    "firebase:deploy": "firebase deploy",
-    "firebase:deploy:hosting": "firebase deploy --only hosting",
-    "firebase:deploy:functions": "firebase deploy --only functions",
-    "firebase:deploy:firestore": "firebase deploy --only firestore",
-    "firebase:emulators": "firebase emulators:start",
-    "db:seed": "node scripts/seed-firestore.js"
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install && cd ../ai-services && pip install -r requirements.txt",
+    "clean": "taskkill /F /IM node.exe 2>nul & taskkill /F /IM python.exe 2>nul",
+    "stop": "npm run clean"
   },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^6.13.1",
-    "@typescript-eslint/parser": "^6.13.1",
     "concurrently": "^8.2.2",
-    "eslint": "^8.55.0",
-    "prettier": "^3.1.0"
-  },
-  "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/your-org/cadillac-ev-cis.git"
+    "cross-env": "^7.0.3"
   },
   "keywords": [
     "cadillac",
-    "electric-vehicles",
+    "ev", 
     "customer-intelligence",
-    "switzerland",
-    "automotive",
-    "crm"
+    "crm",
+    "nextjs",
+    "nestjs"
   ],
-  "author": "CADILLAC Switzerland",
-  "license": "PROPRIETARY"
+  "author": "Cadillac Switzerland",
+  "license": "UNLICENSED"
 }

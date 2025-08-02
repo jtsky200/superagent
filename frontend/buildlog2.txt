@@ -1,0 +1,141 @@
+﻿
+> frontend@0.1.0 build
+> next build
+
+   Ôû▓ Next.js 15.4.4
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ Ô£ô Compiled successfully in 0ms
+   Linting and checking validity of types ...
+
+./src/accessibility/AccessibilityProvider.tsx
+99:11  Warning: 'colorSchemeQuery' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+./src/app/page.tsx
+8:10  Warning: 'Badge' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/app/salesforce/page.tsx
+62:9  Warning: 'handleConfigUpdate' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/analytics/AnalyticsDashboard.tsx
+14:3  Warning: 'Calendar' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/analytics/CustomerJourney.tsx
+23:3  Warning: 'Filter' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/analytics/DashboardMetrics.tsx
+12:3  Warning: 'Car' is defined but never used.  @typescript-eslint/no-unused-vars
+13:3  Warning: 'DollarSign' is defined but never used.  @typescript-eslint/no-unused-vars
+15:3  Warning: 'Calendar' is defined but never used.  @typescript-eslint/no-unused-vars
+18:3  Warning: 'PieChart' is defined but never used.  @typescript-eslint/no-unused-vars
+20:3  Warning: 'Zap' is defined but never used.  @typescript-eslint/no-unused-vars
+21:3  Warning: 'Clock' is defined but never used.  @typescript-eslint/no-unused-vars
+22:3  Warning: 'Award' is defined but never used.  @typescript-eslint/no-unused-vars
+95:6  Warning: React Hook useEffect has a missing dependency: 'fetchDashboardData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+102:6  Warning: React Hook useEffect has a missing dependency: 'fetchDashboardData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/components/analytics/OptimizedDashboardMetrics.tsx
+11:10  Warning: 'VirtualizedList' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/analytics/PredictiveAnalytics.tsx
+8:10  Warning: 'Input' is defined but never used.  @typescript-eslint/no-unused-vars
+9:10  Warning: 'Label' is defined but never used.  @typescript-eslint/no-unused-vars
+16:3  Warning: 'Calendar' is defined but never used.  @typescript-eslint/no-unused-vars
+17:3  Warning: 'BarChart3' is defined but never used.  @typescript-eslint/no-unused-vars
+18:3  Warning: 'PieChart' is defined but never used.  @typescript-eslint/no-unused-vars
+19:3  Warning: 'Zap' is defined but never used.  @typescript-eslint/no-unused-vars
+26:3  Warning: 'Activity' is defined but never used.  @typescript-eslint/no-unused-vars
+173:6  Warning: React Hook useEffect has a missing dependency: 'fetchPredictions'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/components/analytics/ROICalculator.tsx
+13:3  Warning: 'TrendingDown' is defined but never used.  @typescript-eslint/no-unused-vars
+16:3  Warning: 'PieChart' is defined but never used.  @typescript-eslint/no-unused-vars
+21:3  Warning: 'Phone' is defined but never used.  @typescript-eslint/no-unused-vars
+22:3  Warning: 'Calendar' is defined but never used.  @typescript-eslint/no-unused-vars
+96:10  Warning: 'selectedCampaign' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+96:28  Warning: 'setSelectedCampaign' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/analytics/SalesFunnelAnalysis.tsx
+5:10  Warning: 'Badge' is defined but never used.  @typescript-eslint/no-unused-vars
+17:3  Warning: 'ArrowRight' is defined but never used.  @typescript-eslint/no-unused-vars
+20:3  Warning: 'Filter' is defined but never used.  @typescript-eslint/no-unused-vars
+184:6  Warning: React Hook useEffect has a missing dependency: 'fetchFunnelData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/components/customers/CustomerImport.tsx
+21:3  Warning: 'MapPin' is defined but never used.  @typescript-eslint/no-unused-vars
+98:7  Warning: 'SWISS_CANTONS' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/notifications/NotificationCenter.tsx
+7:29  Warning: 'CardHeader' is defined but never used.  @typescript-eslint/no-unused-vars
+7:41  Warning: 'CardTitle' is defined but never used.  @typescript-eslint/no-unused-vars
+16:3  Warning: 'X' is defined but never used.  @typescript-eslint/no-unused-vars
+23:3  Warning: 'Filter' is defined but never used.  @typescript-eslint/no-unused-vars
+25:3  Warning: 'MoreVertical' is defined but never used.  @typescript-eslint/no-unused-vars
+27:3  Warning: 'Phone' is defined but never used.  @typescript-eslint/no-unused-vars
+36:3  Warning: 'MarkAsUnread' is defined but never used.  @typescript-eslint/no-unused-vars
+121:6  Warning: React Hook useEffect has missing dependencies: 'loadNotifications', 'setupAutoRefresh', and 'setupWebSocket'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/components/reporting/SalesReporting.tsx
+15:3  Warning: 'LineChart' is defined but never used.  @typescript-eslint/no-unused-vars
+16:3  Warning: 'Line' is defined but never used.  @typescript-eslint/no-unused-vars
+38:3  Warning: 'Filter' is defined but never used.  @typescript-eslint/no-unused-vars
+41:15  Warning: 'PieChartIcon' is defined but never used.  @typescript-eslint/no-unused-vars
+47:3  Warning: 'Share2' is defined but never used.  @typescript-eslint/no-unused-vars
+141:20  Warning: 'setLanguage' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+195:44  Warning: 'index' is defined but never used.  @typescript-eslint/no-unused-vars
+518:46  Warning: 'index' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/salesforce/CallLogger.tsx
+4:29  Warning: 'CardDescription' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/salesforce/EmailLogger.tsx
+4:29  Warning: 'CardDescription' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/salesforce/LeadsDashboard.tsx
+12:3  Warning: 'Filter' is defined but never used.  @typescript-eslint/no-unused-vars
+56:10  Warning: 'showCreateModal' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+57:10  Warning: 'selectedLead' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+61:6  Warning: React Hook useEffect has a missing dependency: 'loadLeads'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/components/swiss/ChargingStationFinder.tsx
+18:3  Warning: 'Car' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/swiss/EVIncentivesCalculator.tsx
+3:27  Warning: 'useEffect' is defined but never used.  @typescript-eslint/no-unused-vars
+13:3  Warning: 'TrendingUp' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/ui/AnimatedComponents.tsx
+4:10  Warning: 'motionUtilities' is defined but never used.  @typescript-eslint/no-unused-vars
+193:6  Warning: React Hook useEffect has a missing dependency: 'count'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+271:15  Warning: 'rect' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/ui/ErrorStates.tsx
+11:3  Warning: 'ArrowLeft' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/vehicle/VehicleComparison.tsx
+6:27  Warning: 'useEffect' is defined but never used.  @typescript-eslint/no-unused-vars
+15:3  Warning: 'Euro' is defined but never used.  @typescript-eslint/no-unused-vars
+19:3  Warning: 'Shield' is defined but never used.  @typescript-eslint/no-unused-vars
+21:3  Warning: 'ChevronRight' is defined but never used.  @typescript-eslint/no-unused-vars
+248:28  Warning: 'setSelectedVehicles' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+251:10  Warning: 'language' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+251:20  Warning: 'setLanguage' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+669:25  Warning: 'depreciation' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+./src/design-system/components/DesignSystemShowcase.tsx
+5:10  Warning: 'Skeleton' is defined but never used.  @typescript-eslint/no-unused-vars
+6:42  Warning: 'NetworkError' is defined but never used.  @typescript-eslint/no-unused-vars
+16:3  Warning: 'RefreshCw' is defined but never used.  @typescript-eslint/no-unused-vars
+19:3  Warning: 'EyeOff' is defined but never used.  @typescript-eslint/no-unused-vars
+20:3  Warning: 'Volume2' is defined but never used.  @typescript-eslint/no-unused-vars
+21:3  Warning: 'VolumeX' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/design-system/tokens/colors.ts
+208:22  Warning: 'color1' is defined but never used.  @typescript-eslint/no-unused-vars
+208:38  Warning: 'color2' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/utils/memoryCleanup.ts
+203:6  Warning: React Hook React.useEffect has a missing dependency: 'cleanup'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules

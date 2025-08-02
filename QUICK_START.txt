@@ -1,0 +1,20 @@
+🚀 CADILLAC EV CUSTOMER INTELLIGENCE SYSTEM - SCHNELLSTART
+
+📋 SUPER EINFACH:
+
+npm run dev
+
+Das war's! 🎉
+
+✅ Backend startet automatisch (Port 3001)
+✅ Frontend startet automatisch (Port 3000)  
+✅ AI Services starten automatisch (Port 5000)
+✅ Alle Services laufen parallel
+✅ Farbige Konsolen-Logs für jeden Service
+
+🌐 IHRE URLS:
+- Website: http://localhost:3000
+- API: http://localhost:3001
+- Dokumentation: http://localhost:3001/api
+
+⚡ NUR EIN BEFEHL FÜR ALLES!

@@ -1,0 +1,102 @@
+# 🤖 CADILLAC EV CIS - Production-Optimized AI Services Dockerfile
+# Optimized for Swiss market AI processing with multi-provider support
+
+# Stage 1: Base Python image with optimizations
+FROM python:3.11-slim AS base
+
+# Set environment variables for Python optimization
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    DEBIAN_FRONTEND=noninteractive
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    --no-install-recommends \
+    build-essential \
+    curl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Stage 2: Dependencies
+FROM base AS deps
+
+WORKDIR /app
+
+# Copy requirements
+COPY ai-services/requirements.txt ./
+
+# Install Python dependencies with optimizations
+RUN pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir gunicorn[gevent] prometheus-client
+
+# Stage 3: Production
+FROM base AS production
+
+# Create non-root user
+RUN groupadd -r aiuser && useradd -r -g aiuser -u 1001 aiuser
+
+WORKDIR /app
+
+# Copy dependencies from deps stage
+COPY --from=deps /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=deps /usr/local/bin /usr/local/bin
+
+# Copy application code
+COPY ai-services/src/ ./src/
+COPY ai-services/requirements.txt ./
+COPY shared/ ./shared/
+
+# Create necessary directories
+RUN mkdir -p logs cache models && \
+    chown -R aiuser:aiuser /app
+
+# Install Swiss language models and data
+RUN python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords')" && \
+    chown -R aiuser:aiuser /home/aiuser/nltk_data 2>/dev/null || true
+
+# Switch to non-root user
+USER aiuser
+
+# Expose port
+EXPOSE 5000
+
+# Health check for AI services
+HEALTHCHECK --interval=30s --timeout=15s --start-period=120s --retries=3 \
+    CMD curl -f http://localhost:5000/health || exit 1
+
+# Production environment variables
+ENV FLASK_ENV=production \
+    FLASK_DEBUG=False \
+    LOG_LEVEL=INFO \
+    WORKERS=4 \
+    WORKER_CLASS=gevent \
+    WORKER_CONNECTIONS=1000 \
+    MAX_REQUESTS=1000 \
+    MAX_REQUESTS_JITTER=100 \
+    TIMEOUT=300 \
+    KEEPALIVE=5
+
+# Labels
+LABEL maintainer="CADILLAC EV CIS Team" \
+      version="1.0.0" \
+      description="CADILLAC EV CIS - AI Services" \
+      org.opencontainers.image.title="cadillac-ev-cis-ai" \
+      org.opencontainers.image.description="AI Services for Swiss CADILLAC EV CIS" \
+      org.opencontainers.image.vendor="CADILLAC Switzerland"
+
+# Start with Gunicorn for production
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", \
+     "--workers", "4", \
+     "--worker-class", "gevent", \
+     "--worker-connections", "1000", \
+     "--max-requests", "1000", \
+     "--max-requests-jitter", "100", \
+     "--timeout", "300", \
+     "--keepalive", "5", \
+     "--access-logfile", "-", \
+     "--error-logfile", "-", \
+     "--log-level", "info", \
+     "--preload", \
+     "src.main:app"]

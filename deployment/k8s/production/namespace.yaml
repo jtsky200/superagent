@@ -1,0 +1,106 @@
+# 🏭 CADILLAC EV CIS - Production Kubernetes Namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cadillac-ev-production
+  labels:
+    name: cadillac-ev-production
+    environment: production
+    app.kubernetes.io/name: cadillac-ev-cis
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/managed-by: kubernetes
+    region: eu-central-1
+    compliance: swiss-dsgvo
+  annotations:
+    description: "CADILLAC EV Customer Intelligence System - Production Environment"
+    contact: "devops@cadillac-ev-cis.ch"
+    swiss-compliance: "dsgvo-compliant"
+    data-classification: "confidential"
+
+---
+# Resource Quotas for Production
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: cadillac-ev-production-quota
+  namespace: cadillac-ev-production
+spec:
+  hard:
+    requests.cpu: "8"
+    requests.memory: 16Gi
+    limits.cpu: "16"
+    limits.memory: 32Gi
+    persistentvolumeclaims: "10"
+    services: "20"
+    secrets: "50"
+    configmaps: "50"
+    pods: "50"
+
+---
+# Network Policies for Security
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cadillac-ev-network-policy
+  namespace: cadillac-ev-production
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+    - namespaceSelector:
+        matchLabels:
+          name: monitoring
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: kube-system
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 53
+    - protocol: UDP
+      port: 53
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 443
+    - protocol: TCP
+      port: 80
+
+---
+# Pod Security Policy
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: cadillac-ev-psp
+  namespace: cadillac-ev-production
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  requiredDropCapabilities:
+    - ALL
+  volumes:
+    - 'configMap'
+    - 'emptyDir'
+    - 'projected'
+    - 'secret'
+    - 'downwardAPI'
+    - 'persistentVolumeClaim'
+  runAsUser:
+    rule: 'MustRunAsNonRoot'
+  runAsGroup:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1000
+        max: 65535
+  seLinux:
+    rule: 'RunAsAny'
+  fsGroup:
+    rule: 'RunAsAny'

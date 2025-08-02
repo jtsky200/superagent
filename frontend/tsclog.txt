@@ -1,0 +1,75 @@
+﻿src/app/salesforce/page.tsx(120,40): error TS2322: Type '{ children: (string | Element)[]; value: string; disabled: boolean; className: string; }' is not assignable to type 'IntrinsicAttributes & TabsTriggerProps'.
+  Property 'disabled' does not exist on type 'IntrinsicAttributes & TabsTriggerProps'.
+src/app/salesforce/page.tsx(124,43): error TS2322: Type '{ children: (string | Element)[]; value: string; disabled: boolean; className: string; }' is not assignable to type 'IntrinsicAttributes & TabsTriggerProps'.
+  Property 'disabled' does not exist on type 'IntrinsicAttributes & TabsTriggerProps'.
+src/app/salesforce/page.tsx(128,40): error TS2322: Type '{ children: (string | Element)[]; value: string; disabled: boolean; className: string; }' is not assignable to type 'IntrinsicAttributes & TabsTriggerProps'.
+  Property 'disabled' does not exist on type 'IntrinsicAttributes & TabsTriggerProps'.
+src/app/salesforce/page.tsx(132,39): error TS2322: Type '{ children: (string | Element)[]; value: string; disabled: boolean; className: string; }' is not assignable to type 'IntrinsicAttributes & TabsTriggerProps'.
+  Property 'disabled' does not exist on type 'IntrinsicAttributes & TabsTriggerProps'.
+src/components/customers/CustomerImport.tsx(10,26): error TS2307: Cannot find module '@/components/ui/progress' or its corresponding type declarations.
+src/components/customers/CustomerImport.tsx(30,29): error TS2307: Cannot find module 'react-dropzone' or its corresponding type declarations.
+src/components/customers/CustomerImport.tsx(722,21): error TS2322: Type '"destructive" | "default" | "secondary"' is not assignable to type '"error" | "success" | "warning" | "default" | "secondary" | "outline" | undefined'.
+  Type '"destructive"' is not assignable to type '"error" | "success" | "warning" | "default" | "secondary" | "outline" | undefined'.
+src/components/layout/LanguageSwitcher.tsx(16,8): error TS2307: Cannot find module '@/components/ui/dropdown-menu' or its corresponding type declarations.
+src/components/notifications/NotificationCenter.tsx(11,28): error TS2307: Cannot find module '@/components/ui/scroll-area' or its corresponding type declarations.
+src/components/notifications/NotificationCenter.tsx(36,3): error TS2305: Module '"lucide-react"' has no exported member 'MarkAsUnread'.
+src/components/notifications/NotificationCenter.tsx(696,40): error TS2322: Type '"destructive" | "default" | "secondary" | "outline"' is not assignable to type '"error" | "success" | "warning" | "default" | "secondary" | "outline" | undefined'.
+  Type '"destructive"' is not assignable to type '"error" | "success" | "warning" | "default" | "secondary" | "outline" | undefined'.
+src/components/reporting/SalesReporting.tsx(28,8): error TS2307: Cannot find module 'recharts' or its corresponding type declarations.
+src/components/reporting/SalesReporting.tsx(285,46): error TS2322: Type 'Dispatch<SetStateAction<"daily" | "weekly" | "monthly" | "quarterly">>' is not assignable to type '(value: string) => void'.
+  Types of parameters 'value' and 'value' are incompatible.
+    Type 'string' is not assignable to type 'SetStateAction<"daily" | "weekly" | "monthly" | "quarterly">'.
+src/components/reporting/SalesReporting.tsx(451,42): error TS7006: Parameter 'value' implicitly has an 'any' type.
+src/components/reporting/SalesReporting.tsx(451,49): error TS7006: Parameter 'name' implicitly has an 'any' type.
+src/components/reporting/SalesReporting.tsx(479,42): error TS7006: Parameter 'value' implicitly has an 'any' type.
+src/components/reporting/SalesReporting.tsx(502,35): error TS7031: Binding element 'model' implicitly has an 'any' type.
+src/components/reporting/SalesReporting.tsx(502,42): error TS7031: Binding element 'percent' implicitly has an 'any' type.
+src/components/salesforce/CallLogger.tsx(9,26): error TS2307: Cannot find module '../ui/textarea' or its corresponding type declarations.
+src/components/salesforce/CallLogger.tsx(309,30): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/components/salesforce/EmailLogger.tsx(9,26): error TS2307: Cannot find module '../ui/textarea' or its corresponding type declarations.
+src/components/salesforce/EmailLogger.tsx(293,32): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/components/salesforce/SalesforceAuth.tsx(234,19): error TS2322: Type '"destructive"' is not assignable to type '"link" | "default" | "outline" | "ghost" | undefined'.
+src/components/swiss/ChargingStationFinder.tsx(154,11): error TS18046: 'err' is of type 'unknown'.
+src/components/swiss/ChargingStationFinder.tsx(284,23): error TS2322: Type 'Dispatch<SetStateAction<boolean>>' is not assignable to type '(checked: CheckedState) => void'.
+  Types of parameters 'value' and 'checked' are incompatible.
+    Type 'CheckedState' is not assignable to type 'SetStateAction<boolean>'.
+      Type '"indeterminate"' is not assignable to type 'SetStateAction<boolean>'.
+src/components/swiss/ChargingStationFinder.tsx(322,20): error TS2339: Property 'warning' does not exist on type 'ChargingStationResponse'.
+src/components/swiss/ChargingStationFinder.tsx(328,68): error TS2339: Property 'warning' does not exist on type 'ChargingStationResponse'.
+src/components/swiss/CompanyLookup.tsx(87,11): error TS18046: 'err' is of type 'unknown'.
+src/components/swiss/EVIncentivesCalculator.tsx(184,11): error TS18046: 'err' is of type 'unknown'.
+src/components/swiss/EVIncentivesCalculator.tsx(382,21): error TS2322: Type 'Dispatch<SetStateAction<boolean>>' is not assignable to type '(checked: CheckedState) => void'.
+  Types of parameters 'value' and 'checked' are incompatible.
+    Type 'CheckedState' is not assignable to type 'SetStateAction<boolean>'.
+      Type '"indeterminate"' is not assignable to type 'SetStateAction<boolean>'.
+src/components/swiss/PostalCodeValidator.tsx(77,11): error TS18046: 'err' is of type 'unknown'.
+src/components/swiss/PostalCodeValidator.tsx(171,17): error TS2322: Type '"destructive" | "default"' is not assignable to type '"error" | "success" | "warning" | "default" | "secondary" | "outline" | undefined'.
+  Type '"destructive"' is not assignable to type '"error" | "success" | "warning" | "default" | "secondary" | "outline" | undefined'.
+src/components/ui/AnimatedComponents.tsx(319,11): error TS2322: Type '{ '--lift-height': string; } | undefined' is not assignable to type 'CSSProperties | undefined'.
+  Object literal may only specify known properties, and ''--lift-height'' does not exist in type 'Properties<string | number, string & {}>'.
+src/components/vehicle/VehicleComparison.tsx(733,17): error TS2322: Type '"secondary"' is not assignable to type '"link" | "default" | "outline" | "ghost" | undefined'.
+src/design-system/components/DesignSystemShowcase.tsx(493,24): error TS2322: Type '"destructive"' is not assignable to type '"error" | "success" | "warning" | "default" | "secondary" | "outline" | undefined'.
+src/hooks/useApiCall.ts(129,11): error TS18046: 'err' is of type 'unknown'.
+src/hooks/usePerformance.ts(6,24): error TS2554: Expected 1 arguments, but got 0.
+src/hooks/usePerformance.ts(108,26): error TS2554: Expected 1 arguments, but got 0.
+src/hooks/usePerformance.ts(173,24): error TS2554: Expected 1 arguments, but got 0.
+src/lib/i18n.ts(953,12): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ ZH: string; BE: string; LU: string; UR: string; SZ: string; OW: string; NW: string; GL: string; ZG: string; FR: string; SO: string; BS: string; BL: string; SH: string; AR: string; AI: string; SG: string; GR: string; ... 7 more ...; JU: string; } | { ...; } | { ...; } | { ...; }'.
+  No index signature with a parameter of type 'string' was found on type '{ ZH: string; BE: string; LU: string; UR: string; SZ: string; OW: string; NW: string; GL: string; ZG: string; FR: string; SO: string; BS: string; BL: string; SH: string; AR: string; AI: string; SG: string; GR: string; ... 7 more ...; JU: string; } | { ...; } | { ...; } | { ...; }'.
+src/lib/performance.ts(53,25): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/lib/performance.ts(187,7): error TS2322: Type 'Response | undefined' is not assignable to type 'Response | null'.
+  Type 'undefined' is not assignable to type 'Response | null'.
+src/utils/apiOptimization.ts(212,11): error TS18046: 'error' is of type 'unknown'.
+src/utils/apiOptimization.ts(213,11): error TS18046: 'error' is of type 'unknown'.
+src/utils/apiOptimization.ts(226,11): error TS2454: Variable 'lastError' is used before being assigned.
+src/utils/bundleOptimization.ts(31,10): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+src/utils/bundleOptimization.ts(47,11): error TS2454: Variable 'lastError' is used before being assigned.
+src/utils/bundleOptimization.ts(154,11): error TS2322: Type 'Promise<typeof import("C:/Users/j6bea/Documents/SuperAgent/cursor/cadillac-ev-cis/frontend/src/components/analytics/AnalyticsDashboard")>' is not assignable to type 'Promise<{ default: ComponentType<any>; }>'.
+  Property 'default' is missing in type 'typeof import("C:/Users/j6bea/Documents/SuperAgent/cursor/cadillac-ev-cis/frontend/src/components/analytics/AnalyticsDashboard")' but required in type '{ default: ComponentType<any>; }'.
+src/utils/bundleOptimization.ts(158,11): error TS2322: Type 'Promise<typeof import("C:/Users/j6bea/Documents/SuperAgent/cursor/cadillac-ev-cis/frontend/src/components/swiss/SwissServicesPage")>' is not assignable to type 'Promise<{ default: ComponentType<any>; }>'.
+  Property 'default' is missing in type 'typeof import("C:/Users/j6bea/Documents/SuperAgent/cursor/cadillac-ev-cis/frontend/src/components/swiss/SwissServicesPage")' but required in type '{ default: ComponentType<any>; }'.
+src/utils/bundleOptimization.ts(186,22): error TS2304: Cannot find name '__webpack_share_scopes__'.
+src/utils/memoryCleanup.ts(201,3): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+tests/e2e/customer-journey.e2e.test.ts(1,52): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+tests/e2e/customer-journey.e2e.test.ts(17,27): error TS7031: Binding element 'browser' implicitly has an 'any' type.
+tests/e2e/customer-journey.e2e.test.ts(623,37): error TS7006: Parameter 'route' implicitly has an 'any' type.

@@ -1,0 +1,471 @@
+# 🔧 CADILLAC EV CIS - Production ConfigMaps
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cadillac-ev-config
+  namespace: cadillac-ev-production
+  labels:
+    app.kubernetes.io/name: cadillac-ev-cis
+    app.kubernetes.io/component: config
+    environment: production
+data:
+  # General Configuration
+  NODE_ENV: "production"
+  LOG_LEVEL: "info"
+  ENVIRONMENT: "production"
+  REGION: "eu-central-1"
+  
+  # Database Configuration
+  DB_HOST: "cadillac-ev-postgres.cadillac-ev-production.svc.cluster.local"
+  DB_PORT: "5432"
+  DB_NAME: "cadillac_ev_cis_prod"
+  
+  # Redis Configuration
+  REDIS_HOST: "cadillac-ev-redis.cadillac-ev-production.svc.cluster.local"
+  REDIS_PORT: "6379"
+  
+  # JWT Configuration
+  JWT_EXPIRES_IN: "15m"
+  JWT_REFRESH_EXPIRES_IN: "7d"
+  
+  # Rate Limiting
+  RATE_LIMIT_WINDOW_MS: "900000"
+  RATE_LIMIT_MAX: "100"
+  
+  # Swiss Market Configuration
+  DEFAULT_TIMEZONE: "Europe/Zurich"
+  DEFAULT_LOCALE: "de-CH"
+  SUPPORTED_LANGUAGES: "de,fr,it,en"
+  DEFAULT_CURRENCY: "CHF"
+  
+  # Swiss Compliance
+  DSGVO_COMPLIANCE: "true"
+  DATA_RETENTION_DAYS: "2555"  # 7 years for Swiss compliance
+  COOKIE_SECURE: "true"
+  COOKIE_SAME_SITE: "strict"
+  
+  # Performance Settings
+  MAX_CONCURRENT_REQUESTS: "1000"
+  KEEP_ALIVE_TIMEOUT: "65"
+  BODY_PARSER_LIMIT: "20mb"
+  
+  # Monitoring
+  METRICS_ENABLED: "true"
+  HEALTH_CHECK_INTERVAL: "30"
+  PROMETHEUS_METRICS: "true"
+
+---
+# Swiss Cantons Configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: swiss-cantons-config
+  namespace: cadillac-ev-production
+  labels:
+    app.kubernetes.io/name: cadillac-ev-cis
+    app.kubernetes.io/component: swiss-data
+data:
+  cantons.json: |
+    {
+      "cantons": [
+        {
+          "code": "AG",
+          "name": "Aargau",
+          "capital": "Aarau",
+          "language": "de",
+          "taxRate": 0.055,
+          "evIncentive": 2000,
+          "registrationFee": 300
+        },
+        {
+          "code": "AI",
+          "name": "Appenzell Innerrhoden",
+          "capital": "Appenzell",
+          "language": "de",
+          "taxRate": 0.045,
+          "evIncentive": 1500,
+          "registrationFee": 250
+        },
+        {
+          "code": "AR",
+          "name": "Appenzell Ausserrhoden",
+          "capital": "Herisau",
+          "language": "de",
+          "taxRate": 0.048,
+          "evIncentive": 1500,
+          "registrationFee": 280
+        },
+        {
+          "code": "BE",
+          "name": "Bern",
+          "capital": "Bern",
+          "language": "de",
+          "taxRate": 0.058,
+          "evIncentive": 2000,
+          "registrationFee": 350
+        },
+        {
+          "code": "BL",
+          "name": "Basel-Landschaft",
+          "capital": "Liestal",
+          "language": "de",
+          "taxRate": 0.052,
+          "evIncentive": 3000,
+          "registrationFee": 320
+        },
+        {
+          "code": "BS",
+          "name": "Basel-Stadt",
+          "capital": "Basel",
+          "language": "de",
+          "taxRate": 0.050,
+          "evIncentive": 4000,
+          "registrationFee": 400
+        },
+        {
+          "code": "FR",
+          "name": "Fribourg",
+          "capital": "Fribourg",
+          "language": "fr",
+          "taxRate": 0.056,
+          "evIncentive": 2500,
+          "registrationFee": 330
+        },
+        {
+          "code": "GE",
+          "name": "Genève",
+          "capital": "Genève",
+          "language": "fr",
+          "taxRate": 0.054,
+          "evIncentive": 3000,
+          "registrationFee": 380
+        },
+        {
+          "code": "GL",
+          "name": "Glarus",
+          "capital": "Glarus",
+          "language": "de",
+          "taxRate": 0.049,
+          "evIncentive": 1800,
+          "registrationFee": 270
+        },
+        {
+          "code": "GR",
+          "name": "Graubünden",
+          "capital": "Chur",
+          "language": "de",
+          "taxRate": 0.051,
+          "evIncentive": 2200,
+          "registrationFee": 290
+        },
+        {
+          "code": "JU",
+          "name": "Jura",
+          "capital": "Delémont",
+          "language": "fr",
+          "taxRate": 0.057,
+          "evIncentive": 2000,
+          "registrationFee": 310
+        },
+        {
+          "code": "LU",
+          "name": "Luzern",
+          "capital": "Luzern",
+          "language": "de",
+          "taxRate": 0.053,
+          "evIncentive": 2500,
+          "registrationFee": 340
+        },
+        {
+          "code": "NE",
+          "name": "Neuchâtel",
+          "capital": "Neuchâtel",
+          "language": "fr",
+          "taxRate": 0.056,
+          "evIncentive": 2800,
+          "registrationFee": 350
+        },
+        {
+          "code": "NW",
+          "name": "Nidwalden",
+          "capital": "Stans",
+          "language": "de",
+          "taxRate": 0.047,
+          "evIncentive": 2000,
+          "registrationFee": 260
+        },
+        {
+          "code": "OW",
+          "name": "Obwalden",
+          "capital": "Sarnen",
+          "language": "de",
+          "taxRate": 0.048,
+          "evIncentive": 2000,
+          "registrationFee": 270
+        },
+        {
+          "code": "SG",
+          "name": "St. Gallen",
+          "capital": "St. Gallen",
+          "language": "de",
+          "taxRate": 0.054,
+          "evIncentive": 2300,
+          "registrationFee": 320
+        },
+        {
+          "code": "SH",
+          "name": "Schaffhausen",
+          "capital": "Schaffhausen",
+          "language": "de",
+          "taxRate": 0.050,
+          "evIncentive": 2500,
+          "registrationFee": 300
+        },
+        {
+          "code": "SO",
+          "name": "Solothurn",
+          "capital": "Solothurn",
+          "language": "de",
+          "taxRate": 0.055,
+          "evIncentive": 2200,
+          "registrationFee": 310
+        },
+        {
+          "code": "SZ",
+          "name": "Schwyz",
+          "capital": "Schwyz",
+          "language": "de",
+          "taxRate": 0.045,
+          "evIncentive": 2000,
+          "registrationFee": 280
+        },
+        {
+          "code": "TG",
+          "name": "Thurgau",
+          "capital": "Frauenfeld",
+          "language": "de",
+          "taxRate": 0.052,
+          "evIncentive": 2100,
+          "registrationFee": 300
+        },
+        {
+          "code": "TI",
+          "name": "Ticino",
+          "capital": "Bellinzona",
+          "language": "it",
+          "taxRate": 0.053,
+          "evIncentive": 3500,
+          "registrationFee": 360
+        },
+        {
+          "code": "UR",
+          "name": "Uri",
+          "capital": "Altdorf",
+          "language": "de",
+          "taxRate": 0.046,
+          "evIncentive": 2000,
+          "registrationFee": 250
+        },
+        {
+          "code": "VD",
+          "name": "Vaud",
+          "capital": "Lausanne",
+          "language": "fr",
+          "taxRate": 0.057,
+          "evIncentive": 3200,
+          "registrationFee": 370
+        },
+        {
+          "code": "VS",
+          "name": "Valais",
+          "capital": "Sion",
+          "language": "fr",
+          "taxRate": 0.051,
+          "evIncentive": 2500,
+          "registrationFee": 330
+        },
+        {
+          "code": "ZG",
+          "name": "Zug",
+          "capital": "Zug",
+          "language": "de",
+          "taxRate": 0.042,
+          "evIncentive": 3000,
+          "registrationFee": 350
+        },
+        {
+          "code": "ZH",
+          "name": "Zürich",
+          "capital": "Zürich",
+          "language": "de",
+          "taxRate": 0.055,
+          "evIncentive": 5000,
+          "registrationFee": 350
+        }
+      ]
+    }
+
+---
+# AI Services Configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ai-services-config
+  namespace: cadillac-ev-production
+  labels:
+    app.kubernetes.io/name: cadillac-ev-cis
+    app.kubernetes.io/component: ai-services
+data:
+  FLASK_ENV: "production"
+  LOG_LEVEL: "INFO"
+  MAX_WORKERS: "4"
+  WORKER_CLASS: "gevent"
+  WORKER_CONNECTIONS: "1000"
+  TIMEOUT: "300"
+  KEEPALIVE: "5"
+  
+  # AI Model Configuration
+  DEFAULT_MODEL: "gpt-4"
+  FALLBACK_MODEL: "gpt-3.5-turbo"
+  MAX_TOKENS: "2048"
+  TEMPERATURE: "0.7"
+  
+  # Swiss Language Support
+  SUPPORTED_LANGUAGES: "de,de-CH,fr,fr-CH,it,it-CH,en"
+  DEFAULT_LANGUAGE: "de-CH"
+  
+  # Performance Settings
+  CACHE_TTL: "3600"
+  MAX_RETRIES: "3"
+  REQUEST_TIMEOUT: "30"
+
+---
+# Nginx Configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: cadillac-ev-production
+  labels:
+    app.kubernetes.io/name: cadillac-ev-cis
+    app.kubernetes.io/component: nginx
+data:
+  nginx.conf: |
+    user nginx;
+    worker_processes auto;
+    error_log /var/log/nginx/error.log warn;
+    pid /var/run/nginx.pid;
+    
+    events {
+        worker_connections 4096;
+        use epoll;
+        multi_accept on;
+    }
+    
+    http {
+        include /etc/nginx/mime.types;
+        default_type application/octet-stream;
+        
+        # Logging for Swiss compliance
+        log_format json_combined escape=json
+            '{'
+                '"timestamp":"$time_iso8601",'
+                '"remote_addr":"$remote_addr",'
+                '"method":"$request_method",'
+                '"uri":"$uri",'
+                '"status":$status,'
+                '"body_bytes_sent":$body_bytes_sent,'
+                '"request_time":$request_time,'
+                '"user_agent":"$http_user_agent",'
+                '"country":"$geoip_country_code"'
+            '}';
+        
+        access_log /var/log/nginx/access.log json_combined;
+        
+        # Swiss security headers
+        add_header X-Frame-Options DENY always;
+        add_header X-Content-Type-Options nosniff always;
+        add_header X-XSS-Protection "1; mode=block" always;
+        add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+        
+        # Performance
+        sendfile on;
+        tcp_nopush on;
+        tcp_nodelay on;
+        keepalive_timeout 65;
+        client_max_body_size 20M;
+        
+        # Gzip compression
+        gzip on;
+        gzip_vary on;
+        gzip_min_length 1024;
+        gzip_comp_level 6;
+        gzip_types
+            text/plain
+            text/css
+            text/xml
+            text/javascript
+            application/json
+            application/javascript
+            application/xml+rss
+            application/atom+xml
+            image/svg+xml;
+        
+        # Rate limiting for Swiss market
+        limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
+        limit_req_zone $binary_remote_addr zone=auth:10m rate=5r/s;
+        
+        upstream backend {
+            server cadillac-ev-backend:3001 max_fails=3 fail_timeout=30s;
+            keepalive 32;
+        }
+        
+        upstream frontend {
+            server cadillac-ev-frontend:3000 max_fails=3 fail_timeout=30s;
+            keepalive 32;
+        }
+        
+        upstream ai-services {
+            server cadillac-ev-ai:5000 max_fails=3 fail_timeout=30s;
+            keepalive 16;
+        }
+        
+        server {
+            listen 80;
+            server_name _;
+            
+            location /health {
+                access_log off;
+                return 200 "healthy\n";
+                add_header Content-Type text/plain;
+            }
+            
+            location / {
+                proxy_pass http://frontend;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+            }
+            
+            location /api/ {
+                limit_req zone=api burst=10 nodelay;
+                proxy_pass http://backend;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+            }
+            
+            location /ai/ {
+                limit_req zone=api burst=5 nodelay;
+                proxy_pass http://ai-services/;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_read_timeout 600s;
+            }
+        }
+    }

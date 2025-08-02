@@ -1,0 +1,540 @@
+# 🔒 CADILLAC EV CIS - Security Hardening Configuration
+# Comprehensive security policies for Swiss market compliance
+
+# Network Security Policies
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cadillac-ev-network-security
+  namespace: cadillac-ev-production
+  labels:
+    app.kubernetes.io/name: cadillac-ev-cis
+    app.kubernetes.io/component: security
+    swiss-compliance: required
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  
+  # Ingress Rules - What can connect to our services
+  ingress:
+  # Allow ingress from nginx reverse proxy
+  - from:
+    - podSelector:
+        matchLabels:
+          app: cadillac-ev-nginx
+    ports:
+    - protocol: TCP
+      port: 3001  # Backend
+    - protocol: TCP
+      port: 3000  # Frontend
+    - protocol: TCP
+      port: 5000  # AI Services
+  
+  # Allow monitoring from Prometheus
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: monitoring
+    ports:
+    - protocol: TCP
+      port: 9090  # Prometheus metrics
+  
+  # Allow database connections only within namespace
+  - from:
+    - podSelector:
+        matchLabels:
+          component: backend
+    - podSelector:
+        matchLabels:
+          component: ai-services
+    ports:
+    - protocol: TCP
+      port: 5432  # PostgreSQL
+  
+  # Allow Redis connections only within namespace
+  - from:
+    - podSelector:
+        matchLabels:
+          component: backend
+    - podSelector:
+        matchLabels:
+          component: ai-services
+    ports:
+    - protocol: TCP
+      port: 6379  # Redis
+  
+  # Egress Rules - What our services can connect to
+  egress:
+  # Allow DNS resolution
+  - to: []
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+  
+  # Allow HTTPS for external APIs (Swiss APIs, AI providers)
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 443
+  
+  # Allow HTTP for health checks and internal communication
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 80
+  
+  # Allow Swiss API endpoints (specific IPs if available)
+  - to:
+    - namespaceSelector: {}
+    ports:
+    - protocol: TCP
+      port: 443
+
+---
+# Pod Security Standards
+apiVersion: v1
+kind: SecurityContext
+metadata:
+  name: cadillac-ev-security-context
+  namespace: cadillac-ev-production
+  annotations:
+    description: "Security context for CADILLAC EV CIS pods"
+    swiss-compliance: "dsgvo-required"
+spec:
+  # Run as non-root user
+  runAsNonRoot: true
+  runAsUser: 1001
+  runAsGroup: 1001
+  fsGroup: 1001
+  
+  # Security capabilities
+  seccompProfile:
+    type: RuntimeDefault
+  
+  # SELinux options (if applicable)
+  seLinuxOptions:
+    level: "s0:c123,c456"
+
+---
+# Service Account with minimal permissions
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cadillac-ev-backend-sa
+  namespace: cadillac-ev-production
+  labels:
+    app.kubernetes.io/name: cadillac-ev-cis
+    app.kubernetes.io/component: backend
+automountServiceAccountToken: false  # Disable auto-mounting for security
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cadillac-ev-frontend-sa
+  namespace: cadillac-ev-production
+  labels:
+    app.kubernetes.io/name: cadillac-ev-cis
+    app.kubernetes.io/component: frontend
+automountServiceAccountToken: false
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cadillac-ev-ai-sa
+  namespace: cadillac-ev-production
+  labels:
+    app.kubernetes.io/name: cadillac-ev-cis
+    app.kubernetes.io/component: ai-services
+automountServiceAccountToken: false
+
+---
+# RBAC - Role-Based Access Control
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: cadillac-ev-production
+  name: cadillac-ev-minimal-role
+rules:
+# Allow reading own pod information for health checks
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list"]
+  resourceNames: [] # Limit to own pod only
+
+# Allow reading config maps (for Swiss cantons data)
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "list"]
+  resourceNames: ["swiss-cantons-config", "cadillac-ev-config"]
+
+# Swiss compliance: Allow reading secrets only for own service
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get"]
+  resourceNames: ["cadillac-ev-secrets"]
+
+---
+# Bind the role to service accounts
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cadillac-ev-role-binding
+  namespace: cadillac-ev-production
+subjects:
+- kind: ServiceAccount
+  name: cadillac-ev-backend-sa
+  namespace: cadillac-ev-production
+- kind: ServiceAccount
+  name: cadillac-ev-frontend-sa
+  namespace: cadillac-ev-production
+- kind: ServiceAccount
+  name: cadillac-ev-ai-sa
+  namespace: cadillac-ev-production
+roleRef:
+  kind: Role
+  name: cadillac-ev-minimal-role
+  apiGroup: rbac.authorization.k8s.io
+
+---
+# Swiss Data Protection Policy
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: swiss-data-protection-policy
+  namespace: cadillac-ev-production
+  labels:
+    swiss-compliance: required
+    data-protection: dsgvo-dsg
+data:
+  data-protection-policy.yaml: |
+    # Swiss Data Protection Configuration
+    data_protection:
+      # Swiss Federal Data Protection Act (nDSG/revDSG)
+      legal_basis: "nDSG Art. 6, DSGVO Art. 6"
+      
+      # Data retention periods (Swiss law)
+      retention_periods:
+        customer_data: "7 years"  # 2555 days
+        transaction_data: "10 years"
+        log_data: "1 year"
+        marketing_data: "2 years"
+        analytics_data: "2 years"
+      
+      # Data residency requirements
+      data_residency:
+        primary_location: "Switzerland"
+        backup_location: "EU"
+        prohibited_locations: ["US", "CN", "RU"]
+      
+      # Encryption requirements
+      encryption:
+        at_rest: "AES-256"
+        in_transit: "TLS 1.2+"
+        database: "TDE enabled"
+        backups: "AES-256"
+      
+      # Access controls
+      access_control:
+        principle: "least_privilege"
+        mfa_required: true
+        session_timeout: "4 hours"
+        audit_logging: true
+      
+      # Data subject rights (DSGVO)
+      data_subject_rights:
+        right_to_access: true
+        right_to_rectification: true
+        right_to_erasure: true
+        right_to_portability: true
+        right_to_restrict_processing: true
+        right_to_object: true
+      
+      # Privacy by design
+      privacy_by_design:
+        data_minimization: true
+        purpose_limitation: true
+        storage_limitation: true
+        accuracy: true
+        security: true
+        accountability: true
+      
+      # Swiss authority contacts
+      supervisory_authority:
+        name: "Eidgenössischer Datenschutz- und Öffentlichkeitsbeauftragte (EDÖB)"
+        contact: "contact@edoeb.admin.ch"
+        website: "https://www.edoeb.admin.ch"
+      
+      # Data protection officer
+      dpo:
+        email: "datenschutz@cadillac-ev-cis.ch"
+        phone: "+41 44 123 45 67"
+        address: "CADILLAC EV CIS, Datenschutzbeauftragte, 8001 Zürich"
+
+---
+# Security Scanning Policy
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: security-scanning-policy
+  namespace: cadillac-ev-production
+  labels:
+    security: vulnerability-management
+data:
+  security-policy.yaml: |
+    # Security Scanning and Vulnerability Management
+    vulnerability_management:
+      # Scanning frequency
+      scan_frequency:
+        container_images: "daily"
+        dependencies: "weekly"
+        infrastructure: "monthly"
+        penetration_testing: "quarterly"
+      
+      # Severity thresholds
+      severity_thresholds:
+        critical: "immediate_fix"
+        high: "24_hours"
+        medium: "7_days"
+        low: "30_days"
+      
+      # Approved base images
+      approved_base_images:
+        - "node:18-alpine"
+        - "python:3.11-slim"
+        - "postgres:15-alpine"
+        - "redis:7-alpine"
+        - "nginx:alpine"
+      
+      # Security tools
+      security_tools:
+        container_scanning: "trivy"
+        dependency_scanning: "snyk"
+        secret_scanning: "trufflehog"
+        code_analysis: "codeql"
+        infrastructure_scanning: "tfsec"
+      
+      # Incident response
+      incident_response:
+        severity_1: "15_minutes"
+        severity_2: "1_hour"
+        severity_3: "4_hours"
+        severity_4: "24_hours"
+      
+      # Swiss compliance requirements
+      swiss_compliance:
+        mandatory_encryption: true
+        audit_logging: true
+        data_residency: true
+        incident_notification: "72_hours"
+        breach_notification_authority: "EDÖB"
+
+---
+# Admission Controller Configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: admission-controller-config
+  namespace: cadillac-ev-production
+  labels:
+    security: admission-control
+data:
+  admission-policy.yaml: |
+    # Kubernetes Admission Controller Policies
+    admission_policies:
+      
+      # Require security context
+      require_security_context:
+        enabled: true
+        rules:
+          - runAsNonRoot: true
+          - readOnlyRootFilesystem: true
+          - allowPrivilegeEscalation: false
+          - capabilities_drop: ["ALL"]
+      
+      # Resource limits required
+      require_resource_limits:
+        enabled: true
+        rules:
+          - memory_limit_required: true
+          - cpu_limit_required: true
+          - memory_request_required: true
+          - cpu_request_required: true
+      
+      # Image security
+      image_security:
+        enabled: true
+        rules:
+          - disallow_latest_tag: true
+          - require_signed_images: true
+          - allowed_registries: ["ghcr.io", "docker.io", "quay.io"]
+          - vulnerability_scan_required: true
+      
+      # Network security
+      network_security:
+        enabled: true
+        rules:
+          - require_network_policies: true
+          - disallow_host_network: true
+          - disallow_host_pid: true
+          - disallow_host_ipc: true
+      
+      # Swiss compliance checks
+      swiss_compliance_checks:
+        enabled: true
+        rules:
+          - data_residency_check: true
+          - encryption_check: true
+          - audit_logging_check: true
+          - dpo_contact_required: true
+
+---
+# Swiss Compliance Monitoring
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: swiss-compliance-monitoring
+  namespace: cadillac-ev-production
+  labels:
+    compliance: swiss-monitoring
+data:
+  compliance-checks.yaml: |
+    # Swiss Compliance Monitoring Configuration
+    compliance_monitoring:
+      
+      # DSGVO/DSG Compliance Checks
+      dsgvo_checks:
+        - name: "consent_tracking"
+          frequency: "continuous"
+          threshold: "100%"
+          alert_severity: "critical"
+        
+        - name: "data_retention_policy"
+          frequency: "daily"
+          threshold: "0_violations"
+          alert_severity: "critical"
+        
+        - name: "right_to_erasure"
+          frequency: "hourly"
+          threshold: "24_hours_max"
+          alert_severity: "high"
+        
+        - name: "data_portability"
+          frequency: "hourly"
+          threshold: "available"
+          alert_severity: "medium"
+      
+      # Technical Security Checks
+      security_checks:
+        - name: "encryption_at_rest"
+          frequency: "continuous"
+          threshold: "AES-256"
+          alert_severity: "critical"
+        
+        - name: "encryption_in_transit"
+          frequency: "continuous"
+          threshold: "TLS_1.2_plus"
+          alert_severity: "critical"
+        
+        - name: "access_logging"
+          frequency: "continuous"
+          threshold: "100%_coverage"
+          alert_severity: "high"
+        
+        - name: "authentication_mfa"
+          frequency: "continuous"
+          threshold: "required"
+          alert_severity: "high"
+      
+      # Swiss Market Specific Checks
+      swiss_market_checks:
+        - name: "canton_data_availability"
+          frequency: "every_5_minutes"
+          threshold: "all_26_cantons"
+          alert_severity: "medium"
+        
+        - name: "swiss_language_support"
+          frequency: "hourly"
+          threshold: "de_fr_it_available"
+          alert_severity: "medium"
+        
+        - name: "swiss_api_connectivity"
+          frequency: "every_10_minutes"
+          threshold: "handelsregister_zek_available"
+          alert_severity: "low"
+      
+      # Reporting and Notifications
+      reporting:
+        daily_report: true
+        weekly_summary: true
+        monthly_audit: true
+        quarterly_review: true
+        
+        notification_channels:
+          - email: "compliance@cadillac-ev-cis.ch"
+          - slack: "#compliance-alerts"
+          - sms: "+41 79 123 45 67"  # Emergency only
+        
+        escalation_matrix:
+          critical: "immediate"
+          high: "15_minutes"
+          medium: "1_hour"
+          low: "4_hours"
+
+---
+# Backup Security Configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backup-security-config
+  namespace: cadillac-ev-production
+  labels:
+    security: backup-encryption
+data:
+  backup-policy.yaml: |
+    # Backup Security and Encryption Policy
+    backup_security:
+      
+      # Encryption settings
+      encryption:
+        algorithm: "AES-256-GCM"
+        key_rotation: "quarterly"
+        key_management: "AWS KMS eu-central-1"
+        integrity_check: "SHA-256"
+      
+      # Swiss data residency
+      data_residency:
+        primary_backup: "Switzerland"
+        secondary_backup: "Germany"  # EU compliance
+        prohibited_regions: ["us-east-1", "ap-southeast-1"]
+      
+      # Retention policy
+      retention:
+        daily_backups: "30_days"
+        weekly_backups: "12_weeks"
+        monthly_backups: "12_months"
+        yearly_backups: "7_years"  # Swiss legal requirement
+      
+      # Access control
+      access_control:
+        backup_operators: "backup-team@cadillac-ev-cis.ch"
+        restore_authorization: "dpo@cadillac-ev-cis.ch"
+        audit_trail: "mandatory"
+        mfa_required: true
+      
+      # Testing and validation
+      testing:
+        restore_test_frequency: "monthly"
+        integrity_verification: "weekly"
+        disaster_recovery_drill: "quarterly"
+      
+      # Swiss compliance
+      swiss_compliance:
+        edoeb_notification: "data_breach_only"
+        customer_notification: "72_hours_max"
+        documentation_language: ["de", "fr", "it"]

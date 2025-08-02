@@ -1,0 +1,45 @@
+﻿src/components/reporting/SalesReporting.tsx(285,46): error TS2322: Type 'Dispatch<SetStateAction<"daily" | "weekly" | "monthly" | "quarterly">>' is not assignable to type '(value: string) => void'.
+  Types of parameters 'value' and 'value' are incompatible.
+    Type 'string' is not assignable to type 'SetStateAction<"daily" | "weekly" | "monthly" | "quarterly">'.
+src/components/reporting/SalesReporting.tsx(451,42): error TS7006: Parameter 'value' implicitly has an 'any' type.
+src/components/reporting/SalesReporting.tsx(451,49): error TS7006: Parameter 'name' implicitly has an 'any' type.
+src/components/reporting/SalesReporting.tsx(479,42): error TS7006: Parameter 'value' implicitly has an 'any' type.
+src/components/reporting/SalesReporting.tsx(502,35): error TS7031: Binding element 'model' implicitly has an 'any' type.
+src/components/reporting/SalesReporting.tsx(502,42): error TS7031: Binding element 'percent' implicitly has an 'any' type.
+src/components/swiss/ChargingStationFinder.tsx(154,11): error TS18046: 'err' is of type 'unknown'.
+src/components/swiss/ChargingStationFinder.tsx(284,23): error TS2322: Type 'Dispatch<SetStateAction<boolean>>' is not assignable to type '(checked: CheckedState) => void'.
+  Types of parameters 'value' and 'checked' are incompatible.
+    Type 'CheckedState' is not assignable to type 'SetStateAction<boolean>'.
+      Type '"indeterminate"' is not assignable to type 'SetStateAction<boolean>'.
+src/components/swiss/ChargingStationFinder.tsx(322,20): error TS2339: Property 'warning' does not exist on type 'ChargingStationResponse'.
+src/components/swiss/ChargingStationFinder.tsx(328,68): error TS2339: Property 'warning' does not exist on type 'ChargingStationResponse'.
+src/components/swiss/CompanyLookup.tsx(87,11): error TS18046: 'err' is of type 'unknown'.
+src/components/swiss/EVIncentivesCalculator.tsx(184,11): error TS18046: 'err' is of type 'unknown'.
+src/components/swiss/EVIncentivesCalculator.tsx(382,21): error TS2322: Type 'Dispatch<SetStateAction<boolean>>' is not assignable to type '(checked: CheckedState) => void'.
+  Types of parameters 'value' and 'checked' are incompatible.
+    Type 'CheckedState' is not assignable to type 'SetStateAction<boolean>'.
+      Type '"indeterminate"' is not assignable to type 'SetStateAction<boolean>'.
+src/components/swiss/PostalCodeValidator.tsx(77,11): error TS18046: 'err' is of type 'unknown'.
+src/components/ui/AnimatedComponents.tsx(319,11): error TS2322: Type '{ '--lift-height': string; } | undefined' is not assignable to type 'CSSProperties | undefined'.
+  Object literal may only specify known properties, and ''--lift-height'' does not exist in type 'Properties<string | number, string & {}>'.
+src/hooks/useApiCall.ts(129,11): error TS18046: 'err' is of type 'unknown'.
+src/hooks/usePerformance.ts(6,24): error TS2554: Expected 1 arguments, but got 0.
+src/hooks/usePerformance.ts(108,26): error TS2554: Expected 1 arguments, but got 0.
+src/hooks/usePerformance.ts(173,24): error TS2554: Expected 1 arguments, but got 0.
+src/lib/i18n.ts(953,12): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ ZH: string; BE: string; LU: string; UR: string; SZ: string; OW: string; NW: string; GL: string; ZG: string; FR: string; SO: string; BS: string; BL: string; SH: string; AR: string; AI: string; SG: string; GR: string; ... 7 more ...; JU: string; } | { ...; } | { ...; } | { ...; }'.
+  No index signature with a parameter of type 'string' was found on type '{ ZH: string; BE: string; LU: string; UR: string; SZ: string; OW: string; NW: string; GL: string; ZG: string; FR: string; SO: string; BS: string; BL: string; SH: string; AR: string; AI: string; SG: string; GR: string; ... 7 more ...; JU: string; } | { ...; } | { ...; } | { ...; }'.
+src/lib/performance.ts(53,25): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/lib/performance.ts(187,7): error TS2322: Type 'Response | undefined' is not assignable to type 'Response | null'.
+  Type 'undefined' is not assignable to type 'Response | null'.
+src/utils/apiOptimization.ts(212,11): error TS18046: 'error' is of type 'unknown'.
+src/utils/apiOptimization.ts(213,11): error TS18046: 'error' is of type 'unknown'.
+src/utils/apiOptimization.ts(226,11): error TS2454: Variable 'lastError' is used before being assigned.
+src/utils/bundleOptimization.ts(159,11): error TS2322: Type 'Promise<typeof import("C:/Users/j6bea/Documents/SuperAgent/cursor/cadillac-ev-cis/frontend/src/components/analytics/AnalyticsDashboard")>' is not assignable to type 'Promise<{ default: ComponentType<any>; }>'.
+  Property 'default' is missing in type 'typeof import("C:/Users/j6bea/Documents/SuperAgent/cursor/cadillac-ev-cis/frontend/src/components/analytics/AnalyticsDashboard")' but required in type '{ default: ComponentType<any>; }'.
+src/utils/bundleOptimization.ts(163,11): error TS2322: Type 'Promise<typeof import("C:/Users/j6bea/Documents/SuperAgent/cursor/cadillac-ev-cis/frontend/src/components/swiss/SwissServicesPage")>' is not assignable to type 'Promise<{ default: ComponentType<any>; }>'.
+  Property 'default' is missing in type 'typeof import("C:/Users/j6bea/Documents/SuperAgent/cursor/cadillac-ev-cis/frontend/src/components/swiss/SwissServicesPage")' but required in type '{ default: ComponentType<any>; }'.
+tests/e2e/customer-journey.e2e.test.ts(14,16): error TS2709: Cannot use namespace 'BrowserContext' as a type.
+tests/e2e/customer-journey.e2e.test.ts(15,13): error TS2709: Cannot use namespace 'Page' as a type.
+tests/e2e/customer-journey.e2e.test.ts(17,27): error TS7031: Binding element 'browser' implicitly has an 'any' type.
+tests/e2e/customer-journey.e2e.test.ts(623,37): error TS7006: Parameter 'route' implicitly has an 'any' type.

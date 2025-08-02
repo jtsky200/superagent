@@ -7,8 +7,8 @@ import { AuthService } from '../auth.service';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
-    private authService: AuthService,
     private configService: ConfigService,
+    private authService: AuthService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -18,17 +18,20 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
+    // Validate user exists and is active
     const user = await this.authService.findById(payload.sub);
     
-    if (!user || !user.isActive) {
-      throw new UnauthorizedException();
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    if (!user.isActive) {
+      throw new UnauthorizedException('User account is deactivated');
     }
 
     return {
-      id: user.id,
+      sub: user.id,
       email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
       role: user.role,
     };
   }

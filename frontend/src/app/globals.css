@@ -2,6 +2,61 @@
 @tailwind components;
 @tailwind utilities;
 
+/***********************
+ * CADILLAC EV Custom Theme
+ ***********************/
+:root {
+  --primary-dark: #000000;
+  --primary-light: #ffffff;
+  --gray-100: #f7f7f7;
+  --gray-200: #e6e6e6;
+  --gray-300: #d1d1d1;
+  --gray-400: #b0b0b0;
+  --gray-500: #909090;
+  --gray-600: #707070;
+  --gray-700: #505050;
+  --gray-800: #303030;
+  --gray-900: #1a1a1a;
+}
+
+.card {
+  @apply bg-white border border-gray-300 shadow-md rounded-lg;
+}
+.btn-primary {
+  @apply bg-[color:var(--primary-dark)] text-white px-4 py-2 rounded hover:bg-gray-800 disabled:opacity-50 transition-colors;
+}
+.btn-outline {
+  @apply border border-[color:var(--primary-dark)] text-[color:var(--primary-dark)] px-4 py-2 rounded hover:bg-gray-200 disabled:opacity-50 transition-colors;
+}
+.nav-link {
+  @apply text-gray-600 border-b-2 border-transparent inline-block whitespace-nowrap;
+}
+.nav-link:hover,
+.nav-link.active {
+  @apply text-[color:var(--primary-dark)] border-[color:var(--primary-dark)];
+}
+/* Progress bar styles */
+.progress-bar { @apply bg-gray-300 h-2 rounded; }
+.progress-value { @apply h-full bg-[color:var(--primary-dark)]; }
+
+/* Dashboard grid helpers */
+.dashboard-grid { @apply grid gap-6 md:gap-8; grid-template-columns:repeat(12,minmax(0,1fr)); }
+.span-4 { grid-column: span 4 / span 4; }
+.span-6 { grid-column: span 6 / span 6; }
+.span-8 { grid-column: span 8 / span 8; }
+.span-12 { grid-column: span 12 / span 12; }
+
+@media (max-width:1024px) {
+  .dashboard-grid { grid-template-columns:repeat(6,minmax(0,1fr)); }
+  .lg-span-6 { grid-column: span 6 / span 6; }
+  .lg-span-3 { grid-column: span 3 / span 3; }
+}
+@media (max-width:768px) {
+  .dashboard-grid { grid-template-columns:1fr; }
+  .span-4,.span-6,.span-8,.span-12,.lg-span-3,.lg-span-6 { grid-column: span 1 / span 1; }
+}
+
+
 @layer base {
   :root {
     --background: 255 255 255;
@@ -69,5 +124,215 @@
   html {
     scroll-behavior: smooth;
   }
+}
+
+/* Custom scrollbar for better UX */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Smooth transitions for better performance */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Custom focus styles for better accessibility */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+/* Gradient backgrounds for better visual appeal */
+.gradient-bg {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.gradient-card {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Mobile-first responsive utilities */
+.mobile-container {
+  @apply px-4 sm:px-6 lg:px-8;
+}
+
+.mobile-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+}
+
+.mobile-flex {
+  @apply flex flex-col sm:flex-row;
+}
+
+/* Enhanced button styles */
+.btn-primary {
+  @apply bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5;
+}
+
+.btn-secondary {
+  @apply bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium py-2 px-4 rounded-lg transition-all duration-200 border border-gray-300;
+}
+
+/* Card enhancements */
+.card-hover {
+  @apply hover:shadow-xl hover:-translate-y-1 transition-all duration-300;
+}
+
+.card-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+}
+
+/* Text enhancements */
+.text-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Loading states */
+.loading {
+  @apply animate-pulse bg-gray-200 rounded;
+}
+
+/* Custom shadows */
+.shadow-soft {
+  box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
+}
+
+.shadow-medium {
+  box-shadow: 0 4px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Responsive typography */
+.text-responsive {
+  @apply text-sm sm:text-base lg:text-lg;
+}
+
+.heading-responsive {
+  @apply text-xl sm:text-2xl lg:text-3xl font-bold;
+}
+
+/* Custom spacing for mobile */
+.mobile-spacing {
+  @apply space-y-4 sm:space-y-6 lg:space-y-8;
+}
+
+/* Enhanced form styles */
+.form-input {
+  @apply w-full border-2 border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all;
+}
+
+.form-select {
+  @apply w-full border-2 border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all bg-white;
+}
+
+/* Badge enhancements */
+.badge-primary {
+  @apply bg-blue-100 text-blue-800 border-blue-200;
+}
+
+.badge-success {
+  @apply bg-green-100 text-green-800 border-green-200;
+}
+
+.badge-warning {
+  @apply bg-yellow-100 text-yellow-800 border-yellow-200;
+}
+
+.badge-danger {
+  @apply bg-red-100 text-red-800 border-red-200;
+}
+
+/* Performance optimizations */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-break {
+    page-break-before: always;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .border-gray-200 {
+    border-color: #000000;
+  }
+  
+  .text-gray-600 {
+    color: #000000;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Dark mode support (if needed in future) */
+@media (prefers-color-scheme: dark) {
+  /* Dark mode styles can be added here */
+}
+
+/* Custom utilities for better mobile experience */
+.touch-target {
+  @apply min-h-[44px] min-w-[44px];
+}
+
+.safe-area {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 

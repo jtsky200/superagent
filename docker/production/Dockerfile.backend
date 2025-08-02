@@ -1,0 +1,92 @@
+# 🏗️ CADILLAC EV CIS - Production-Optimized Backend Dockerfile
+# Multi-stage build for optimal performance and security
+
+# Stage 1: Build Stage
+FROM node:18-alpine AS builder
+
+# Set working directory
+WORKDIR /app
+
+# Install build dependencies for native modules
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    libc6-compat
+
+# Copy package files
+COPY backend/package*.json ./
+COPY shared/package*.json ./shared/
+
+# Install dependencies with npm ci for faster, reliable builds
+RUN npm ci --only=production && npm cache clean --force
+
+# Copy source code
+COPY backend/ ./
+COPY shared/ ./shared/
+
+# Build the application
+RUN npm run build
+
+# Remove dev dependencies to reduce image size
+RUN npm prune --production
+
+# Stage 2: Production Runtime
+FROM node:18-alpine AS runtime
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nestjs -u 1001
+
+# Set working directory
+WORKDIR /app
+
+# Install only runtime dependencies
+RUN apk add --no-cache \
+    dumb-init \
+    curl \
+    tzdata && \
+    rm -rf /var/cache/apk/*
+
+# Set timezone to Switzerland
+ENV TZ=Europe/Zurich
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Copy built application from builder stage
+COPY --from=builder --chown=nestjs:nodejs /app/dist ./dist
+COPY --from=builder --chown=nestjs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nestjs:nodejs /app/package*.json ./
+
+# Create logs directory
+RUN mkdir -p /app/logs && chown nestjs:nodejs /app/logs
+
+# Switch to non-root user
+USER nestjs
+
+# Expose port
+EXPOSE 3001
+
+# Health check for container orchestration
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:3001/health || exit 1
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["dumb-init", "--"]
+
+# Start the application
+CMD ["node", "dist/main.js"]
+
+# Production environment variables
+ENV NODE_ENV=production \
+    PORT=3001 \
+    LOG_LEVEL=info \
+    ENABLE_SWAGGER=false
+
+# Labels for container metadata
+LABEL maintainer="CADILLAC EV CIS Team" \
+      version="1.0.0" \
+      description="CADILLAC EV Customer Intelligence System - Backend API" \
+      org.opencontainers.image.title="cadillac-ev-cis-backend" \
+      org.opencontainers.image.description="NestJS Backend for Swiss CADILLAC EV CIS" \
+      org.opencontainers.image.vendor="CADILLAC Switzerland" \
+      org.opencontainers.image.version="1.0.0"

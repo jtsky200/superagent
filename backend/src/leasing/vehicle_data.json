@@ -1,0 +1,364 @@
+{
+  "extraction_date": "2025-08-01",
+  "source": "CA Auto Finance Easyfin",
+  "currency": "CHF",
+  "market": "Switzerland",
+  "LYRIQ_2025": {
+    "name": "CADILLAC LYRIQ 2025",
+    "basePrice": {
+      "inclVat": 89100.00,
+      "exclVat": 82423.68
+    },
+    "variants": [
+      {
+        "id": "lyriq_2025_base",
+        "name": "Base",
+        "trim": "001",
+        "description": "CADILLAC Lyriq 2025 Base",
+        "mileageOptions": [
+          {
+            "annualKm": 10000,
+            "residualPercent": 34.43,
+            "residualValue": 30677.13,
+            "baseMonthlyRate": 1165.35,
+            "services": {
+              "comfortPlus": 57.50,
+              "gap": 43.95,
+              "legalProtection": 6.25
+            }
+          },
+          {
+            "annualKm": 15000,
+            "residualPercent": 31.72,
+            "residualValue": 28262.52,
+            "baseMonthlyRate": 1222.45,
+            "services": {
+              "comfortPlus": 60.20,
+              "gap": 43.95,
+              "legalProtection": 6.25
+            }
+          },
+          {
+            "annualKm": 20000,
+            "residualPercent": 28.73,
+            "residualValue": 25998.43,
+            "baseMonthlyRate": 1288.30,
+            "services": {
+              "comfortPlus": 64.15,
+              "gap": 43.95,
+              "legalProtection": 6.25
+            }
+          }
+        ]
+      },
+      {
+        "id": "lyriq_2025_sport",
+        "name": "Sport",
+        "trim": "001",
+        "description": "CADILLAC Lyriq 2025 Sport",
+        "mileageOptions": [
+          {
+            "annualKm": 10000,
+            "residualPercent": 34.43,
+            "residualValue": 30677.13,
+            "baseMonthlyRate": 1165.35,
+            "services": {
+              "comfortPlus": 57.50,
+              "gap": 43.95,
+              "legalProtection": 6.25
+            }
+          },
+          {
+            "annualKm": 15000,
+            "residualPercent": 31.72,
+            "residualValue": 28262.52,
+            "baseMonthlyRate": 1222.45,
+            "services": {
+              "comfortPlus": 60.20,
+              "gap": 43.95,
+              "legalProtection": 6.25
+            }
+          },
+          {
+            "annualKm": 20000,
+            "residualPercent": 28.73,
+            "residualValue": 25998.43,
+            "baseMonthlyRate": 1288.30,
+            "services": {
+              "comfortPlus": 64.15,
+              "gap": 43.95,
+              "legalProtection": 6.25
+            }
+          }
+        ]
+      },
+      {
+        "id": "lyriq_2025_luxury",
+        "name": "Luxury",
+        "trim": "002",
+        "description": "CADILLAC Lyriq 2025 Luxury",
+        "mileageOptions": [
+          {
+            "annualKm": 10000,
+            "residualPercent": 34.43,
+            "residualValue": 30677.13,
+            "baseMonthlyRate": 1165.35,
+            "services": {
+              "comfortPlus": 57.50,
+              "gap": 43.95,
+              "legalProtection": 6.25
+            }
+          },
+          {
+            "annualKm": 15000,
+            "residualPercent": 31.72,
+            "residualValue": 28262.52,
+            "baseMonthlyRate": 1222.45,
+            "services": {
+              "comfortPlus": 60.20,
+              "gap": 43.95,
+              "legalProtection": 6.25
+            }
+          },
+          {
+            "annualKm": 20000,
+            "residualPercent": 28.73,
+            "residualValue": 25998.43,
+            "baseMonthlyRate": 1288.30,
+            "services": {
+              "comfortPlus": 64.15,
+              "gap": 43.95,
+              "legalProtection": 6.25
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "VISTIQ": {
+    "name": "CADILLAC VISTIQ",
+    "variants": [
+      {
+        "id": "vistiq_luxury",
+        "name": "Luxury",
+        "trim": "AA0",
+        "description": "CADILLAC VISTIQ Luxury",
+        "basePrice": {
+          "inclVat": 108800.00,
+          "exclVat": 100647.55
+        },
+        "mileageOptions": [
+          {
+            "annualKm": 10000,
+            "residualPercent": 36.64,
+            "residualValue": 39864.34,
+            "baseMonthlyRate": 1388.60,
+            "services": {
+              "comfortPlus": 67.55,
+              "gap": 53.70,
+              "legalProtection": 6.25
+            }
+          },
+          {
+            "annualKm": 15000,
+            "residualPercent": 33.77,
+            "residualValue": 36741.76,
+            "baseMonthlyRate": 1462.40,
+            "services": {
+              "comfortPlus": 71.00,
+              "gap": 53.70,
+              "legalProtection": 6.25
+            }
+          },
+          {
+            "annualKm": 20000,
+            "residualPercent": 30.59,
+            "residualValue": 33281.94,
+            "baseMonthlyRate": 1543.25,
+            "services": {
+              "comfortPlus": 74.45,
+              "gap": 53.70,
+              "legalProtection": 6.25
+            }
+          }
+        ]
+      },
+      {
+        "id": "vistiq_sport",
+        "name": "Sport",
+        "trim": "AAC",
+        "description": "CADILLAC VISTIQ Sport",
+        "basePrice": {
+          "inclVat": 108800.00,
+          "exclVat": 100647.55
+        },
+        "mileageOptions": [
+          {
+            "annualKm": 10000,
+            "residualPercent": 36.64,
+            "residualValue": 39864.34,
+            "baseMonthlyRate": 1388.60,
+            "services": {
+              "comfortPlus": 67.55,
+              "gap": 53.70,
+              "legalProtection": 6.25
+            }
+          },
+          {
+            "annualKm": 15000,
+            "residualPercent": 33.77,
+            "residualValue": 36741.76,
+            "baseMonthlyRate": 1462.40,
+            "services": {
+              "comfortPlus": 71.00,
+              "gap": 53.70,
+              "legalProtection": 6.25
+            }
+          },
+          {
+            "annualKm": 20000,
+            "residualPercent": 30.59,
+            "residualValue": 33281.94,
+            "baseMonthlyRate": 1543.25,
+            "services": {
+              "comfortPlus": 74.45,
+              "gap": 53.70,
+              "legalProtection": 6.25
+            }
+          }
+        ]
+      },
+      {
+        "id": "vistiq_premium",
+        "name": "Premium",
+        "trim": "AAB",
+        "description": "CADILLAC VISTIQ Premium",
+        "basePrice": {
+          "inclVat": 120275.00,
+          "exclVat": 111262.74
+        },
+        "mileageOptions": [
+          {
+            "annualKm": 10000,
+            "residualPercent": 36.64,
+            "residualValue": 44068.78,
+            "baseMonthlyRate": 1545.85,
+            "services": {
+              "comfortPlus": 74.70,
+              "gap": 59.35,
+              "legalProtection": 6.25
+            }
+          },
+          {
+            "annualKm": 15000,
+            "residualPercent": 33.77,
+            "residualValue": 40616.87,
+            "baseMonthlyRate": 1627.35,
+            "services": {
+              "comfortPlus": 78.50,
+              "gap": 59.35,
+              "legalProtection": 6.25
+            }
+          },
+          {
+            "annualKm": 20000,
+            "residualPercent": 30.59,
+            "residualValue": 36792.14,
+            "baseMonthlyRate": 1717.30,
+            "services": {
+              "comfortPlus": 82.30,
+              "gap": 59.35,
+              "legalProtection": 6.25
+            }
+          }
+        ]
+      },
+      {
+        "id": "vistiq_platinum",
+        "name": "Platinum",
+        "trim": "AAU",
+        "description": "CADILLAC VISTIQ Platinum",
+        "basePrice": {
+          "inclVat": 123845.00,
+          "exclVat": 114565.24
+        },
+        "mileageOptions": [
+          {
+            "annualKm": 10000,
+            "residualPercent": 36.64,
+            "residualValue": 45376.83,
+            "baseMonthlyRate": 1594.70,
+            "services": {
+              "comfortPlus": 76.90,
+              "gap": 61.10,
+              "legalProtection": 6.25
+            }
+          },
+          {
+            "annualKm": 15000,
+            "residualPercent": 33.77,
+            "residualValue": 41822.46,
+            "baseMonthlyRate": 1678.65,
+            "services": {
+              "comfortPlus": 80.85,
+              "gap": 61.10,
+              "legalProtection": 6.25
+            }
+          },
+          {
+            "annualKm": 20000,
+            "residualPercent": 30.59,
+            "residualValue": 37884.15,
+            "baseMonthlyRate": 1771.25,
+            "services": {
+              "comfortPlus": 84.85,
+              "gap": 61.10,
+              "legalProtection": 6.25
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "leasingParameters": {
+    "standardDuration": 48,
+    "availableDurations": [24, 36, 48, 60],
+    "interestRateNominal": 0.00,
+    "interestRateEffective": 0.00,
+    "excessMileageCost": 0.50,
+    "downPaymentOptions": [0, 5, 10, 15, 20, 25, 30]
+  },
+  "tcoData": {
+    "energyCosts": {
+      "electric": {
+        "pricePerKwh": 0.20,
+        "consumptionPer100km": 20,
+        "costPer100km": 4.00
+      },
+      "gasoline": {
+        "pricePerLiter": 1.65,
+        "consumptionPer100km": 8,
+        "costPer100km": 13.20
+      }
+    },
+    "maintenanceCosts": {
+      "electric": {
+        "annualCost": 400
+      },
+      "gasoline": {
+        "annualCost": 1000
+      }
+    },
+    "swissTaxBenefits": {
+      "motorVehicleTax": 0,
+      "co2Tax": 0,
+      "cantonalIncentives": 5000,
+      "companyCarTaxReduction": 0.5
+    },
+    "environmentalImpact": {
+      "co2SavingsPerYear": 2.3,
+      "equivalentTrees": 10000
+    }
+  }
+}
+

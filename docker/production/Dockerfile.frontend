@@ -1,0 +1,91 @@
+# 🎨 CADILLAC EV CIS - Production-Optimized Frontend Dockerfile
+# Multi-stage build with Next.js optimization for Swiss market
+
+# Stage 1: Dependencies
+FROM node:18-alpine AS deps
+
+# Install libc6-compat for Alpine compatibility
+RUN apk add --no-cache libc6-compat
+
+WORKDIR /app
+
+# Copy package files
+COPY frontend/package*.json ./
+COPY shared/package*.json ./shared/
+
+# Install dependencies with exact versions
+RUN npm ci --frozen-lockfile
+
+# Stage 2: Builder
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Copy dependencies from deps stage
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/shared ./shared
+
+# Copy source code
+COPY frontend/ ./
+
+# Set environment variables for build
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
+
+# Build the application with optimizations
+RUN npm run build
+
+# Stage 3: Runner (Production)
+FROM node:18-alpine AS runner
+
+# Install dumb-init for proper signal handling
+RUN apk add --no-cache dumb-init curl tzdata
+
+# Set timezone to Switzerland
+ENV TZ=Europe/Zurich
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+WORKDIR /app
+
+# Create nextjs user for security
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
+
+# Copy necessary files from builder
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/package*.json ./
+
+# Copy built application
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Create cache directory
+RUN mkdir -p .next/cache && chown nextjs:nodejs .next/cache
+
+# Switch to non-root user
+USER nextjs
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:3000/api/health || exit 1
+
+# Production environment variables
+ENV NODE_ENV=production \
+    PORT=3000 \
+    HOSTNAME=0.0.0.0 \
+    NEXT_TELEMETRY_DISABLED=1
+
+# Labels
+LABEL maintainer="CADILLAC EV CIS Team" \
+      version="1.0.0" \
+      description="CADILLAC EV CIS - Frontend Application" \
+      org.opencontainers.image.title="cadillac-ev-cis-frontend" \
+      org.opencontainers.image.description="Next.js Frontend for Swiss CADILLAC EV CIS" \
+      org.opencontainers.image.vendor="CADILLAC Switzerland"
+
+# Use dumb-init and start the application
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["node", "server.js"]

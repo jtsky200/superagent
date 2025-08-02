@@ -1,0 +1,348 @@
+# 🚨 CADILLAC EV CIS - Prometheus Alert Rules
+# Swiss market specific alerts for production monitoring
+
+groups:
+  # 🔥 Critical System Alerts
+  - name: cadillac-ev-critical
+    rules:
+      - alert: ServiceDown
+        expr: up{job=~"cadillac-ev-.*"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          team: devops
+          service: "{{ $labels.job }}"
+          environment: production
+          swiss_compliance: required
+        annotations:
+          summary: "CADILLAC EV Service is down"
+          description: "Service {{ $labels.job }} has been down for more than 1 minute. This affects Swiss customer operations."
+          runbook_url: "https://docs.cadillac-ev-cis.ch/runbooks/service-down"
+          swiss_impact: "Customer access to CADILLAC EV services in Switzerland is affected"
+
+      - alert: DatabaseConnectionFailure
+        expr: up{job="cadillac-ev-postgres"} == 0
+        for: 30s
+        labels:
+          severity: critical
+          team: devops
+          service: database
+          environment: production
+          swiss_compliance: required
+        annotations:
+          summary: "PostgreSQL database is unreachable"
+          description: "PostgreSQL database has been unreachable for more than 30 seconds. All Swiss customer data operations are affected."
+          runbook_url: "https://docs.cadillac-ev-cis.ch/runbooks/database-failure"
+          swiss_impact: "Swiss customer data access is unavailable"
+
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 90
+        for: 5m
+        labels:
+          severity: critical
+          team: devops
+          environment: production
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage is above 90% for more than 5 minutes on {{ $labels.instance }}"
+          runbook_url: "https://docs.cadillac-ev-cis.ch/runbooks/high-memory"
+
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 85
+        for: 10m
+        labels:
+          severity: critical
+          team: devops
+          environment: production
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage is above 85% for more than 10 minutes on {{ $labels.instance }}"
+          runbook_url: "https://docs.cadillac-ev-cis.ch/runbooks/high-cpu"
+
+      - alert: DiskSpaceRunningOut
+        expr: (1 - (node_filesystem_avail_bytes / node_filesystem_size_bytes)) * 100 > 85
+        for: 5m
+        labels:
+          severity: critical
+          team: devops
+          environment: production
+        annotations:
+          summary: "Disk space running out"
+          description: "Disk space usage is above 85% on {{ $labels.instance }} filesystem {{ $labels.mountpoint }}"
+          runbook_url: "https://docs.cadillac-ev-cis.ch/runbooks/disk-space"
+
+  # ⚠️ Warning Alerts
+  - name: cadillac-ev-warnings
+    rules:
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job=~"cadillac-ev-.*"}[5m])) > 1
+        for: 5m
+        labels:
+          severity: warning
+          team: devops
+          service: "{{ $labels.job }}"
+          environment: production
+        annotations:
+          summary: "High response time detected"
+          description: "95th percentile response time is above 1 second for {{ $labels.job }} (current: {{ $value }}s)"
+          runbook_url: "https://docs.cadillac-ev-cis.ch/runbooks/high-response-time"
+          swiss_impact: "Swiss customers may experience slow response times"
+
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) * 100 > 5
+        for: 3m
+        labels:
+          severity: warning
+          team: devops
+          service: "{{ $labels.job }}"
+          environment: production
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is above 5% for {{ $labels.job }} (current: {{ $value }}%)"
+          runbook_url: "https://docs.cadillac-ev-cis.ch/runbooks/high-error-rate"
+
+      - alert: DatabaseSlowQueries
+        expr: rate(pg_stat_activity_max_tx_duration[5m]) > 30
+        for: 5m
+        labels:
+          severity: warning
+          team: devops
+          service: database
+          environment: production
+        annotations:
+          summary: "Slow database queries detected"
+          description: "Database queries are taking longer than 30 seconds"
+          runbook_url: "https://docs.cadillac-ev-cis.ch/runbooks/slow-queries"
+
+      - alert: RedisHighMemoryUsage
+        expr: (redis_memory_used_bytes / redis_memory_max_bytes) * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+          team: devops
+          service: redis
+          environment: production
+        annotations:
+          summary: "Redis memory usage is high"
+          description: "Redis memory usage is above 80% (current: {{ $value }}%)"
+          runbook_url: "https://docs.cadillac-ev-cis.ch/runbooks/redis-memory"
+
+  # 🇨🇭 Swiss Market Specific Alerts
+  - name: cadillac-ev-swiss-compliance
+    rules:
+      - alert: SwissDataRetentionViolation
+        expr: cadillac_ev_data_retention_days > 2555  # 7 years Swiss limit
+        for: 1m
+        labels:
+          severity: critical
+          team: compliance
+          swiss_compliance: violation
+          environment: production
+        annotations:
+          summary: "Swiss data retention policy violation"
+          description: "Data retention period exceeds Swiss legal requirements ({{ $value }} days > 2555 days)"
+          runbook_url: "https://docs.cadillac-ev-cis.ch/runbooks/data-retention"
+          swiss_impact: "DSGVO/DSG compliance violation - immediate action required"
+          legal_requirement: "Swiss Federal Data Protection Act"
+
+      - alert: SwissCantonServiceFailure
+        expr: up{job="cadillac-ev-backend", endpoint="/api/cantons"} == 0
+        for: 2m
+        labels:
+          severity: warning
+          team: devops
+          swiss_compliance: required
+          environment: production
+        annotations:
+          summary: "Swiss canton service is unavailable"
+          description: "Swiss canton data service has been unavailable for more than 2 minutes"
+          runbook_url: "https://docs.cadillac-ev-cis.ch/runbooks/canton-service"
+          swiss_impact: "Swiss customers cannot access canton-specific features"
+
+      - alert: SwissLanguageServiceDegraded
+        expr: rate(cadillac_ev_language_translation_errors_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          team: devops
+          swiss_compliance: accessibility
+          environment: production
+        annotations:
+          summary: "Swiss language service is degraded"
+          description: "High error rate in DE/FR/IT language services ({{ $value }} errors/sec)"
+          runbook_url: "https://docs.cadillac-ev-cis.ch/runbooks/language-service"
+          swiss_impact: "Multilingual Swiss customers may experience service issues"
+
+      - alert: DSGVOConsentTrackingFailure
+        expr: rate(cadillac_ev_consent_tracking_failures_total[10m]) > 0
+        for: 1m
+        labels:
+          severity: critical
+          team: compliance
+          swiss_compliance: violation
+          environment: production
+        annotations:
+          summary: "DSGVO consent tracking is failing"
+          description: "Consent tracking system is failing ({{ $value }} failures in 10 minutes)"
+          runbook_url: "https://docs.cadillac-ev-cis.ch/runbooks/consent-tracking"
+          swiss_impact: "Legal compliance risk - user consent not properly tracked"
+          legal_requirement: "GDPR Article 7 & Swiss DSG"
+
+  # 🤖 AI Services Alerts
+  - name: cadillac-ev-ai-services
+    rules:
+      - alert: AIServiceHighLatency
+        expr: histogram_quantile(0.95, rate(cadillac_ev_ai_request_duration_seconds_bucket[5m])) > 10
+        for: 5m
+        labels:
+          severity: warning
+          team: ai-team
+          service: ai-services
+          environment: production
+        annotations:
+          summary: "AI service response time is high"
+          description: "95th percentile AI service response time is above 10 seconds (current: {{ $value }}s)"
+          runbook_url: "https://docs.cadillac-ev-cis.ch/runbooks/ai-latency"
+          swiss_impact: "Swiss customers experiencing slow AI-powered recommendations"
+
+      - alert: AIProviderFailover
+        expr: increase(cadillac_ev_ai_provider_failover_total[10m]) > 5
+        for: 2m
+        labels:
+          severity: warning
+          team: ai-team
+          service: ai-services
+          environment: production
+        annotations:
+          summary: "Frequent AI provider failovers detected"
+          description: "AI service has failed over between providers {{ $value }} times in 10 minutes"
+          runbook_url: "https://docs.cadillac-ev-cis.ch/runbooks/ai-failover"
+
+      - alert: SwissGermanSentimentAnalysisFailure
+        expr: rate(cadillac_ev_sentiment_analysis_errors_total{language="de-CH"}[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          team: ai-team
+          swiss_compliance: language-support
+          environment: production
+        annotations:
+          summary: "Swiss German sentiment analysis is failing"
+          description: "High error rate in Swiss German sentiment analysis ({{ $value }} errors/sec)"
+          runbook_url: "https://docs.cadillac-ev-cis.ch/runbooks/sentiment-analysis"
+          swiss_impact: "Swiss German speaking customers affected"
+
+  # 💰 Business Metrics Alerts
+  - name: cadillac-ev-business
+    rules:
+      - alert: LowTCOCalculationRate
+        expr: rate(cadillac_ev_tco_calculations_total[1h]) < 10
+        for: 15m
+        labels:
+          severity: warning
+          team: business
+          metric: tco-calculations
+          environment: production
+        annotations:
+          summary: "Low TCO calculation rate"
+          description: "TCO calculations per hour are below expected threshold ({{ $value }}/hour < 10/hour)"
+          runbook_url: "https://docs.cadillac-ev-cis.ch/runbooks/low-tco-rate"
+          business_impact: "Potential decrease in customer engagement"
+
+      - alert: HighCustomerDropoffRate
+        expr: (rate(cadillac_ev_session_abandonment_total[1h]) / rate(cadillac_ev_session_started_total[1h])) * 100 > 30
+        for: 10m
+        labels:
+          severity: warning
+          team: business
+          metric: customer-engagement
+          environment: production
+        annotations:
+          summary: "High customer session dropoff rate"
+          description: "Customer session abandonment rate is above 30% (current: {{ $value }}%)"
+          runbook_url: "https://docs.cadillac-ev-cis.ch/runbooks/customer-dropoff"
+          business_impact: "Potential revenue loss due to high abandonment"
+
+      - alert: SwissCantonsUnbalancedLoad
+        expr: stddev(rate(cadillac_ev_requests_total[1h])) by (canton) > 100
+        for: 30m
+        labels:
+          severity: info
+          team: business
+          swiss_metric: canton-distribution
+          environment: production
+        annotations:
+          summary: "Unbalanced load across Swiss cantons"
+          description: "Request distribution across Swiss cantons shows high variance"
+          runbook_url: "https://docs.cadillac-ev-cis.ch/runbooks/canton-load"
+          business_impact: "Some Swiss regions may be underserved"
+
+  # 🔒 Security Alerts
+  - name: cadillac-ev-security
+    rules:
+      - alert: SuspiciousLoginActivity
+        expr: rate(cadillac_ev_failed_login_attempts_total[5m]) > 10
+        for: 2m
+        labels:
+          severity: warning
+          team: security
+          environment: production
+          swiss_compliance: security
+        annotations:
+          summary: "High rate of failed login attempts"
+          description: "More than 10 failed login attempts per second in the last 5 minutes"
+          runbook_url: "https://docs.cadillac-ev-cis.ch/runbooks/suspicious-login"
+          security_impact: "Potential brute force attack"
+
+      - alert: SSLCertificateExpiring
+        expr: (ssl_certificate_expiry_seconds - time()) / 86400 < 30
+        for: 1h
+        labels:
+          severity: warning
+          team: devops
+          environment: production
+          swiss_compliance: security
+        annotations:
+          summary: "SSL certificate expiring soon"
+          description: "SSL certificate for {{ $labels.instance }} expires in {{ $value }} days"
+          runbook_url: "https://docs.cadillac-ev-cis.ch/runbooks/ssl-renewal"
+          swiss_impact: "Swiss customer access may be affected if certificate expires"
+
+      - alert: UnauthorizedAPIAccess
+        expr: rate(cadillac_ev_unauthorized_requests_total[5m]) > 5
+        for: 3m
+        labels:
+          severity: critical
+          team: security
+          environment: production
+          swiss_compliance: security
+        annotations:
+          summary: "High rate of unauthorized API access attempts"
+          description: "More than 5 unauthorized requests per second (current: {{ $value }}/sec)"
+          runbook_url: "https://docs.cadillac-ev-cis.ch/runbooks/unauthorized-access"
+          security_impact: "Potential security breach attempt"
+
+# Swiss Compliance Summary Alert
+  - name: cadillac-ev-compliance-summary
+    rules:
+      - alert: SwissComplianceHealthCheck
+        expr: |
+          (
+            count(up{job=~"cadillac-ev-.*"} == 1) / count(up{job=~"cadillac-ev-.*"}) * 100 < 95
+          ) or (
+            rate(cadillac_ev_dsgvo_violations_total[1h]) > 0
+          ) or (
+            rate(cadillac_ev_data_retention_violations_total[1h]) > 0
+          )
+        for: 5m
+        labels:
+          severity: critical
+          team: compliance
+          swiss_compliance: health-check
+          environment: production
+        annotations:
+          summary: "Swiss compliance health check failed"
+          description: "One or more Swiss compliance requirements are not being met"
+          runbook_url: "https://docs.cadillac-ev-cis.ch/runbooks/compliance-health"
+          swiss_impact: "Risk of legal non-compliance in Switzerland"
+          required_action: "Immediate compliance team review required"

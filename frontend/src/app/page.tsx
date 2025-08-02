@@ -1,693 +1,603 @@
 'use client';
 
-import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Search, Car, Calculator, FileText, Download, Share2, Printer, Save } from 'lucide-react';
+
+interface Vehicle {
+  name: string;
+  basePrice: {
+    inclVat: number;
+    exclVat: number;
+  };
+  variants: Array<{
+    id: string;
+    name: string;
+    description: string;
+    mileageOptions: Array<{
+      annualKm: number;
+      residualPercent: number;
+      residualValue: number;
+      baseMonthlyRate: number;
+      services: {
+        comfortPlus: number;
+        gap: number;
+        legalProtection: number;
+      };
+    }>;
+  }>;
+}
+
+interface CustomerProfile {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  birthDate: string;
+  type: 'private' | 'business';
+  creditRating: string;
+  income: number;
+  existingObligations: number;
+  communicationPreferences: string[];
+  interests: string[];
+  currentVehicles: Array<{
+    model: string;
+    year: string;
+  }>;
+  visits: Array<{
+    type: string;
+    date: string;
+  }>;
+}
 
 export default function Dashboard() {
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [vehicles, setVehicles] = useState<Record<string, Vehicle>>({});
+  const [customerProfile, setCustomerProfile] = useState<CustomerProfile | null>(null);
+  const [searchType, setSearchType] = useState('email');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchOptions, setSearchOptions] = useState({
+    handelsregister: true,
+    zekCrif: true,
+    socialNetworks: true,
+    signingAuthorities: true,
+    debtCollection: true,
+    realEstate: false,
+    internationalMatch: false
+  });
+  const [loading, setLoading] = useState(false);
+
+  // Load vehicle data on component mount
+  useEffect(() => {
+    loadVehicles();
+  }, []);
+
+  const loadVehicles = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/leasing/vehicles');
+      const data = await response.json();
+      if (data.success) {
+        setVehicles(data.data);
+      }
+    } catch (error) {
+      console.error('Error loading vehicles:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const searchCustomer = async () => {
+    if (!searchQuery.trim()) return;
+    
+    try {
+      setLoading(true);
+      // Simulate customer search - in real implementation, this would call your backend API
+      const mockCustomer: CustomerProfile = {
+        id: '1',
+        name: 'Michael Müller',
+        email: 'michael.mueller@example.com',
+        phone: '+41 78 123 45 67',
+        address: 'Bahnhofstrasse 42, 8001 Zürich',
+        birthDate: '15.05.1978',
+        type: 'private',
+        creditRating: 'A+',
+        income: 145000,
+        existingObligations: 650000,
+        communicationPreferences: ['E-Mail', 'WhatsApp'],
+        interests: ['Technologie', 'Nachhaltigkeit', 'Premium'],
+        currentVehicles: [
+          { model: 'Tesla Model S', year: 'Seit 2020' },
+          { model: 'Mercedes GLE', year: '2016-2020' }
+        ],
+        visits: [
+          { type: 'Website-Besuch (LYRIQ)', date: 'Vor 3 Tagen' },
+          { type: 'Showroom Zürich', date: '12.04.2023' }
+        ]
+      };
+      setCustomerProfile(mockCustomer);
+    } catch (error) {
+      console.error('Error searching customer:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('de-CH', {
+      style: 'currency',
+      currency: 'CHF'
+    }).format(amount);
+  };
+
+  const renderDashboard = () => (
+    <div className="space-y-8">
+      {/* Search Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Search className="h-5 w-5" />
+            Kundenrecherche
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Suchtyp</label>
+              <Select value={searchType} onValueChange={setSearchType}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="email">E-Mail</SelectItem>
+                  <SelectItem value="phone">Telefonnummer</SelectItem>
+                  <SelectItem value="name">Name</SelectItem>
+                  <SelectItem value="company">Unternehmen</SelectItem>
+                  <SelectItem value="uid">UID-Nummer</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Suchbegriff</label>
+              <Input
+                placeholder="z.B. josegoncalves11@hotmail.com"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <div className="flex items-end">
+              <Button onClick={searchCustomer} disabled={loading} className="w-full">
+                <Search className="h-4 w-4 mr-2" />
+                Suchen
+              </Button>
+            </div>
+          </div>
+
+          <div>
+            <div className="flex justify-between items-center mb-4">
+              <h4 className="font-medium">Erweiterte Suchoptionen</h4>
+              <div className="flex items-center space-x-2">
+                <span className="text-sm">Internationaler Abgleich</span>
+                <Checkbox
+                  checked={searchOptions.internationalMatch}
+                  onCheckedChange={(checked) => 
+                    setSearchOptions(prev => ({ ...prev, internationalMatch: !!checked }))
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {[
+                { key: 'handelsregister', label: 'Handelsregister (Schweiz)' },
+                { key: 'zekCrif', label: 'ZEK / CRIF (Finanzstatus)' },
+                { key: 'socialNetworks', label: 'Soziale Netzwerke' },
+                { key: 'signingAuthorities', label: 'Zeichnungsberechtigungen' },
+                { key: 'debtCollection', label: 'Betreibungsauszug' },
+                { key: 'realEstate', label: 'Immobilienbesitz' }
+              ].map(({ key, label }) => (
+                <div key={key} className="flex items-center space-x-2">
+                  <Checkbox
+                    checked={searchOptions[key as keyof typeof searchOptions]}
+                    onCheckedChange={(checked) => 
+                      setSearchOptions(prev => ({ ...prev, [key]: !!checked }))
+                    }
+                  />
+                  <span className="text-sm">{label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Customer Profile */}
+      {customerProfile && (
+        <Card>
+          <CardHeader>
+            <div className="flex justify-between items-start">
+              <CardTitle>Kundenprofil</CardTitle>
+              <div className="flex space-x-2">
+                <Button variant="outline" size="sm">
+                  <Printer className="h-4 w-4 mr-2" />
+                  Drucken
+                </Button>
+                <Button variant="outline" size="sm">
+                  <Share2 className="h-4 w-4 mr-2" />
+                  Teilen
+                </Button>
+                <Button size="sm">
+                  <Save className="h-4 w-4 mr-2" />
+                  Speichern
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Personal Data */}
+              <Card>
+                <CardHeader>
+                  <div className="flex justify-between items-start">
+                    <CardTitle className="text-base">Persönliche Daten</CardTitle>
+                    <Badge variant="secondary">Verifiziert</Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                      <span className="text-lg">👤</span>
+                    </div>
+                    <div>
+                      <p className="font-medium">{customerProfile.name}</p>
+                      <p className="text-sm text-gray-600">
+                        {customerProfile.type === 'private' ? 'Privatperson' : 'Unternehmen'}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div>
+                      <p className="text-xs text-gray-500">E-Mail</p>
+                      <p className="text-sm">{customerProfile.email}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500">Telefon</p>
+                      <p className="text-sm">{customerProfile.phone}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500">Adresse</p>
+                      <p className="text-sm">{customerProfile.address}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500">Geburtsdatum</p>
+                      <p className="text-sm">{customerProfile.birthDate}</p>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <p className="text-xs text-gray-500">Kommunikationspräferenz</p>
+                    <div className="flex flex-wrap gap-2 mt-1">
+                      {customerProfile.communicationPreferences.map((pref, index) => (
+                        <Badge key={index} variant="outline" className="text-xs">
+                          {pref}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Financial Data */}
+              <Card>
+                <CardHeader>
+                  <div className="flex justify-between items-start">
+                    <CardTitle className="text-base">Finanzdaten</CardTitle>
+                    <Badge variant="secondary">ZEK / CRIF</Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <p className="text-sm">Bonitätsbewertung</p>
+                      <p className="text-sm font-medium">{customerProfile.creditRating}</p>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="bg-black h-2 rounded-full" style={{ width: '90%' }}></div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <p className="text-xs text-gray-500">Einkommen</p>
+                    <p className="text-sm">{formatCurrency(customerProfile.income)} / Jahr</p>
+                  </div>
+                  
+                  <div>
+                    <p className="text-xs text-gray-500">Bestehende Verpflichtungen</p>
+                    <p className="text-sm">Hypothek: {formatCurrency(customerProfile.existingObligations)}</p>
+                  </div>
+                  
+                  <div>
+                    <p className="text-xs text-gray-500">Kredit-Leasing-Limite (geschätzt)</p>
+                    <p className="text-sm">Bis {formatCurrency(2500)} / Monat</p>
+                  </div>
+                  
+                  <div>
+                    <p className="text-xs text-gray-500">Kredithistorie</p>
+                    <p className="text-sm">Keine negativen Einträge</p>
+                  </div>
+                  
+                  <Button variant="outline" className="w-full">
+                    Vollständigen Finanzreport anzeigen
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Interests & History */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Interessen & Historie</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <p className="text-xs text-gray-500">Interessiert an Modellen</p>
+                    <div className="flex flex-wrap gap-2 mt-1">
+                      <Badge variant="outline" className="text-xs">CADILLAC LYRIQ</Badge>
+                      <Badge variant="outline" className="text-xs">CADILLAC OPTIQ</Badge>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <p className="text-xs text-gray-500">Besuche</p>
+                    <div className="mt-1 space-y-2">
+                      {customerProfile.visits.map((visit, index) => (
+                        <div key={index} className="flex justify-between text-sm">
+                          <span>{visit.type}</span>
+                          <span>{visit.date}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <p className="text-xs text-gray-500">Aktuelle Fahrzeuge</p>
+                    <div className="mt-1 space-y-2">
+                      {customerProfile.currentVehicles.map((vehicle, index) => (
+                        <div key={index} className="flex justify-between text-sm">
+                          <span>{vehicle.model}</span>
+                          <span>{vehicle.year}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <p className="text-xs text-gray-500">Besondere Interessen</p>
+                    <div className="flex flex-wrap gap-2 mt-1">
+                      {customerProfile.interests.map((interest, index) => (
+                        <Badge key={index} variant="outline" className="text-xs">
+                          {interest}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Vehicle Models */}
+      {Object.keys(vehicles).length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Car className="h-5 w-5" />
+              CADILLAC EV Modelle (Schweiz)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Object.entries(vehicles).map(([vehicleId, vehicle]) => (
+                <Card key={vehicleId} className="hover:shadow-lg transition-all">
+                  <CardHeader>
+                    <div className="flex justify-between">
+                      <CardTitle className="text-base">{vehicle.name}</CardTitle>
+                      <Badge variant="secondary">Verfügbar</Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="h-48 bg-gray-200 flex items-center justify-center rounded">
+                      <Car className="h-16 w-16 text-gray-500" />
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div>
+                        <p className="text-xs text-gray-500">Preis ab</p>
+                        <p className="font-bold">{formatCurrency(vehicle.basePrice.inclVat)}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Varianten</p>
+                        <p className="font-medium">{vehicle.variants.length}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex space-x-2">
+                      <Button className="flex-1" size="sm">
+                        <Calculator className="h-4 w-4 mr-2" />
+                        TCO Berechnen
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        Details
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+
+  const renderCustomerSearch = () => (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Erweiterte Kundensuche</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-600">Funktionalität wird implementiert...</p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  const renderVehicleModels = () => {
+    const VehicleModels = React.lazy(() => import('@/components/vehicles/VehicleModels').then(module => ({ default: module.VehicleModels })));
+    return (
+      <React.Suspense fallback={<div className="flex items-center justify-center py-8"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div></div>}>
+        <VehicleModels />
+      </React.Suspense>
+    );
+  };
+
+  const renderTcoCalculator = () => {
+    // Dynamic import to avoid SSR issues
+    const TcoCalculator = React.lazy(() => import('@/components/tco/TcoCalculator').then(module => ({ default: module.TcoCalculator })));
+    return (
+      <React.Suspense fallback={<div className="flex items-center justify-center py-8"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div></div>}>
+        <TcoCalculator />
+      </React.Suspense>
+    );
+  };
+
+  const renderFinancing = () => {
+    const LeasingCalculator = React.lazy(() => import('@/components/leasing/LeasingCalculator').then(module => ({ default: module.LeasingCalculator })));
+    return (
+      <React.Suspense fallback={<div className="flex items-center justify-center py-8"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div></div>}>
+        <LeasingCalculator />
+      </React.Suspense>
+    );
+  };
+
+  const renderAnalytics = () => (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Analysen</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-600">Funktionalität wird implementiert...</p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  const renderSettings = () => (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Einstellungen</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-600">Funktionalität wird implementiert...</p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  const navigationItems = [
+    { id: 'dashboard', label: 'Dashboard' },
+    { id: 'search', label: 'Kundensuche' },
+    { id: 'vehicles', label: 'Fahrzeugmodelle' },
+    { id: 'tco', label: 'TCO-Kalkulator' },
+    { id: 'finance', label: 'Finanzierung' },
+    { id: 'analytics', label: 'Analysen' },
+    { id: 'settings', label: 'Einstellungen' }
+  ];
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'dashboard':
+        return renderDashboard();
+      case 'search':
+        return renderCustomerSearch();
+      case 'vehicles':
+        return renderVehicleModels();
+      case 'tco':
+        return renderTcoCalculator();
+      case 'finance':
+        return renderFinancing();
+      case 'analytics':
+        return renderAnalytics();
+      case 'settings':
+        return renderSettings();
+      default:
+        return renderDashboard();
+    }
+  };
+
   return (
-         <div className="min-h-screen">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="border-b border-gray-300">
+      <header className="bg-white border-b border-gray-200">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-4">
             <h1 className="text-2xl font-bold">CADILLAC EV</h1>
             <span className="text-xl font-light">|</span>
             <h2 className="text-xl">Customer Intelligence System</h2>
           </div>
-          <div className="flex items-center space-x-6">
-            <Button variant="outline" className="flex items-center space-x-2">
-              <span>?</span>
-              <span>Hilfe</span>
+          <div className="flex items-center space-x-4">
+            <Button variant="outline" size="sm">
+              Hilfe
             </Button>
-            <div className="relative">
-              <Button variant="outline" className="flex items-center space-x-2">
-                <span>👤</span>
-                <span>Admin</span>
-                <span>▼</span>
-              </Button>
-            </div>
+            <Button variant="outline" size="sm">
+              Admin
+            </Button>
           </div>
         </div>
       </header>
 
-      {/* Main Navigation */}
-      <nav className="border-b border-gray-300 bg-gray-100">
+      {/* Navigation */}
+      <nav className="bg-white border-b border-gray-200">
         <div className="container mx-auto px-4">
           <div className="flex overflow-x-auto">
-            <a href="#" className="px-6 py-4 font-medium text-gray-900 border-b-2 border-gray-900">Dashboard</a>
-            <a href="#" className="px-6 py-4 font-medium text-gray-600 hover:text-gray-900">Kundensuche</a>
-            <a href="#" className="px-6 py-4 font-medium text-gray-600 hover:text-gray-900">Fahrzeugmodelle</a>
-            <a href="#" className="px-6 py-4 font-medium text-gray-600 hover:text-gray-900">TCO-Kalkulator</a>
-            <a href="#" className="px-6 py-4 font-medium text-gray-600 hover:text-gray-900">Finanzierung</a>
-            <a href="#" className="px-6 py-4 font-medium text-gray-600 hover:text-gray-900">Analysen</a>
-            <a href="#" className="px-6 py-4 font-medium text-gray-600 hover:text-gray-900">Einstellungen</a>
+            {navigationItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`flex items-center px-6 py-4 font-medium whitespace-nowrap transition-all duration-200 ${
+                  activeTab === item.id
+                    ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                }`}
+              >
+                <span>{item.label}</span>
+              </button>
+            ))}
           </div>
         </div>
       </nav>
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
-        {/* Search Section */}
-        <section className="mb-12">
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="text-xl font-bold mb-6">Kundenrecherche</h3>
-              <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-                <div className="flex-1">
-                  <label htmlFor="searchType" className="block text-sm font-medium text-gray-700 mb-1">Suchtyp</label>
-                  <select id="searchType" className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500">
-                    <option value="email">E-Mail</option>
-                    <option value="phone">Telefonnummer</option>
-                    <option value="name">Name</option>
-                    <option value="company">Unternehmen</option>
-                    <option value="uid">UID-Nummer</option>
-                  </select>
-                </div>
-                <div className="flex-grow">
-                  <label htmlFor="searchQuery" className="block text-sm font-medium text-gray-700 mb-1">Suchbegriff</label>
-                  <Input
-                    type="text"
-                    id="searchQuery"
-                    placeholder="z.B. josegoncalves11@hotmail.com"
-                    className="w-full"
-                  />
-                </div>
-                <div className="self-end">
-                  <Button className="flex items-center space-x-2">
-                    <span>🔍</span>
-                    <span>Suchen</span>
-                  </Button>
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h4 className="font-medium">Erweiterte Suchoptionen</h4>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm">Internationaler Abgleich</span>
-                                         <label className="relative inline-flex items-center cursor-pointer">
-                       <input type="checkbox" className="sr-only peer" aria-label="Internationaler Abgleich aktivieren" title="Internationaler Abgleich aktivieren" />
-                       <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gray-800"></div>
-                     </label>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <label className="flex items-center space-x-2">
-                    <input type="checkbox" className="h-5 w-5" defaultChecked />
-                    <span>Handelsregister (Schweiz)</span>
-                  </label>
-                  <label className="flex items-center space-x-2">
-                    <input type="checkbox" className="h-5 w-5" defaultChecked />
-                    <span>ZEK / CRIF (Finanzstatus)</span>
-                  </label>
-                  <label className="flex items-center space-x-2">
-                    <input type="checkbox" className="h-5 w-5" defaultChecked />
-                    <span>Soziale Netzwerke</span>
-                  </label>
-                  <label className="flex items-center space-x-2">
-                    <input type="checkbox" className="h-5 w-5" defaultChecked />
-                    <span>Zeichnungsberechtigungen</span>
-                  </label>
-                  <label className="flex items-center space-x-2">
-                    <input type="checkbox" className="h-5 w-5" defaultChecked />
-                    <span>Betreibungsauszug</span>
-                  </label>
-                  <label className="flex items-center space-x-2">
-                    <input type="checkbox" className="h-5 w-5" />
-                    <span>Immobilienbesitz</span>
-                  </label>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-
-        {/* Sample Customer Profile */}
-        <section className="mb-12">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start mb-6">
-                <h3 className="text-xl font-bold">Kundenprofil</h3>
-                <div className="flex space-x-3">
-                  <Button variant="outline" size="sm" className="flex items-center space-x-1">
-                    <span>🖨️</span>
-                    <span>Drucken</span>
-                  </Button>
-                  <Button variant="outline" size="sm" className="flex items-center space-x-1">
-                    <span>📤</span>
-                    <span>Teilen</span>
-                  </Button>
-                  <Button size="sm" className="flex items-center space-x-1">
-                    <span>💾</span>
-                    <span>Speichern</span>
-                  </Button>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Basic Info */}
-                <Card className="p-4">
-                  <div className="flex justify-between items-start mb-4">
-                    <h4 className="font-bold">Persönliche Daten</h4>
-                    <Badge className="bg-gray-800 text-white">Verifiziert</Badge>
-                  </div>
-                  
-                  <div className="flex flex-col space-y-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-                        <span className="text-xl">👤</span>
-                      </div>
-                      <div>
-                        <p className="font-medium">Michael Müller</p>
-                        <p className="text-sm text-gray-600">Privatperson</p>
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 gap-2">
-                      <div>
-                        <p className="text-xs text-gray-500">E-Mail</p>
-                        <p className="text-sm">michael.mueller@example.ch</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Telefon</p>
-                        <p className="text-sm">+41 78 123 45 67</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Adresse</p>
-                        <p className="text-sm">Bahnhofstrasse 42</p>
-                        <p className="text-sm">8001 Zürich</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Geburtsdatum</p>
-                        <p className="text-sm">15.05.1978</p>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-
-                {/* Financial Info */}
-                <Card className="p-4">
-                  <div className="flex justify-between items-start mb-4">
-                    <h4 className="font-bold">Finanzdaten</h4>
-                    <Badge className="bg-gray-800 text-white">ZEK / CRIF</Badge>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    <div>
-                      <div className="flex justify-between mb-1">
-                        <p className="text-sm">Bonitätsbewertung</p>
-                        <p className="text-sm font-medium">A+</p>
-                      </div>
-                      <div className="w-full bg-gray-300 rounded-full h-2">
-                        <div className="bg-gray-800 h-2 rounded-full" style={{ width: '90%' }}></div>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <p className="text-xs text-gray-500">Einkommen</p>
-                                             <p className="text-sm">CHF 145&apos;000 / Jahr</p>
-                    </div>
-                    
-                    <div>
-                      <p className="text-xs text-gray-500">Bestehende Verpflichtungen</p>
-                                             <p className="text-sm">Hypothek: CHF 650&apos;000</p>
-                    </div>
-                    
-                    <div>
-                      <p className="text-xs text-gray-500">Kredit-Leasing-Limite (geschätzt)</p>
-                                             <p className="text-sm">Bis CHF 2&apos;500 / Monat</p>
-                    </div>
-                    
-                    <div>
-                      <p className="text-xs text-gray-500">Kredithistorie</p>
-                      <p className="text-sm">Keine negativen Einträge</p>
-                    </div>
-                  </div>
-                </Card>
-
-                {/* Interest & History */}
-                <Card className="p-4">
-                  <h4 className="font-bold mb-4">Interessen & Historie</h4>
-                  
-                  <div className="space-y-4">
-                    <div>
-                      <p className="text-xs text-gray-500">Interessiert an Modellen</p>
-                      <div className="flex flex-wrap gap-2 mt-1">
-                        <Badge variant="secondary">CADILLAC LYRIQ</Badge>
-                        <Badge variant="secondary">CADILLAC OPTIQ</Badge>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <p className="text-xs text-gray-500">Besuche</p>
-                      <div className="mt-1 space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span>Website-Besuch (LYRIQ)</span>
-                          <span>Vor 3 Tagen</span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span>Showroom Zürich</span>
-                          <span>12.04.2023</span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <p className="text-xs text-gray-500">Aktuelle Fahrzeuge</p>
-                      <div className="mt-1 space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span>Tesla Model S</span>
-                          <span>Seit 2020</span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span>Mercedes GLE</span>
-                          <span>2016-2020</span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <p className="text-xs text-gray-500">Besondere Interessen</p>
-                      <div className="flex flex-wrap gap-2 mt-1">
-                        <Badge variant="secondary">Technologie</Badge>
-                        <Badge variant="secondary">Nachhaltigkeit</Badge>
-                        <Badge variant="secondary">Premium</Badge>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-
-        {/* CADILLAC EV Models */}
-        <section className="mb-12">
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="text-xl font-bold mb-6">CADILLAC EV Modelle (Schweiz)</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {/* LYRIQ Model */}
-                <Card className="p-4 hover:shadow-lg transition-all">
-                  <div className="flex justify-between mb-4">
-                    <h4 className="font-bold">CADILLAC LYRIQ</h4>
-                    <Badge className="bg-gray-800 text-white">Verfügbar</Badge>
-                  </div>
-                  
-                  <div className="h-48 bg-gray-200 flex items-center justify-center mb-4 rounded">
-                    <span className="text-6xl text-gray-500">🚗</span>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <p className="text-xs text-gray-500">Reichweite</p>
-                        <p className="text-sm">Bis zu 500 km</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Ladedauer (DC)</p>
-                        <p className="text-sm">30 Min. (10-80%)</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Leistung</p>
-                        <p className="text-sm">340 kW (462 PS)</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">0-100 km/h</p>
-                        <p className="text-sm">4.9 Sekunden</p>
-                      </div>
-                    </div>
-                    
-                    <div className="pt-2">
-                      <p className="text-xs text-gray-500">Preis ab</p>
-                                             <p className="text-lg font-bold">CHF 89&apos;900</p>
-                    </div>
-                    
-                    <div className="flex space-x-2">
-                      <Button className="flex-1">TCO Berechnen</Button>
-                      <Button variant="outline" className="flex-1">Details</Button>
-                    </div>
-                  </div>
-                </Card>
-                
-                {/* CELESTIQ Model */}
-                <Card className="p-4 hover:shadow-lg transition-all">
-                  <div className="flex justify-between mb-4">
-                    <h4 className="font-bold">CADILLAC CELESTIQ</h4>
-                    <Badge className="bg-gray-800 text-white">Limitiert</Badge>
-                  </div>
-                  
-                  <div className="h-48 bg-gray-200 flex items-center justify-center mb-4 rounded">
-                    <span className="text-6xl text-gray-500">🚗</span>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <p className="text-xs text-gray-500">Reichweite</p>
-                        <p className="text-sm">Bis zu 480 km</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Ladedauer (DC)</p>
-                        <p className="text-sm">35 Min. (10-80%)</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Leistung</p>
-                        <p className="text-sm">447 kW (608 PS)</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">0-100 km/h</p>
-                        <p className="text-sm">3.8 Sekunden</p>
-                      </div>
-                    </div>
-                    
-                    <div className="pt-2">
-                      <p className="text-xs text-gray-500">Preis ab</p>
-                                             <p className="text-lg font-bold">CHF 350&apos;000</p>
-                    </div>
-                    
-                    <div className="flex space-x-2">
-                      <Button className="flex-1">TCO Berechnen</Button>
-                      <Button variant="outline" className="flex-1">Details</Button>
-                    </div>
-                  </div>
-                </Card>
-                
-                {/* OPTIQ Model */}
-                <Card className="p-4 hover:shadow-lg transition-all">
-                  <div className="flex justify-between mb-4">
-                    <h4 className="font-bold">CADILLAC OPTIQ</h4>
-                    <Badge className="bg-gray-800 text-white">Vorbestellbar</Badge>
-                  </div>
-                  
-                  <div className="h-48 bg-gray-200 flex items-center justify-center mb-4 rounded">
-                    <span className="text-6xl text-gray-500">🚗</span>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <p className="text-xs text-gray-500">Reichweite</p>
-                        <p className="text-sm">Bis zu 450 km</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Ladedauer (DC)</p>
-                        <p className="text-sm">28 Min. (10-80%)</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Leistung</p>
-                        <p className="text-sm">220 kW (299 PS)</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">0-100 km/h</p>
-                        <p className="text-sm">6.1 Sekunden</p>
-                      </div>
-                    </div>
-                    
-                    <div className="pt-2">
-                      <p className="text-xs text-gray-500">Preis ab</p>
-                                             <p className="text-lg font-bold">CHF 67&apos;900</p>
-                    </div>
-                    
-                    <div className="flex space-x-2">
-                      <Button className="flex-1">TCO Berechnen</Button>
-                      <Button variant="outline" className="flex-1">Details</Button>
-                    </div>
-                  </div>
-                </Card>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-
-        {/* TCO Calculator */}
-        <section className="mb-12">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start mb-6">
-                <h3 className="text-xl font-bold">TCO Kalkulator (CADILLAC LYRIQ)</h3>
-                <div className="flex space-x-2">
-                  <Button variant="outline" size="sm" className="flex items-center space-x-1">
-                    <span>📥</span>
-                    <span>Exportieren</span>
-                  </Button>
-                  <Button size="sm" className="flex items-center space-x-1">
-                    <span>📤</span>
-                    <span>Mit Kunde teilen</span>
-                  </Button>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* TCO Settings */}
-                <Card className="p-4">
-                  <h4 className="font-medium mb-4">TCO Parameter</h4>
-                  
-                  <div className="space-y-4">
-                                         <div>
-                       <label className="block text-sm mb-1">Fahrzeugmodell</label>
-                       <select className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500" aria-label="Fahrzeugmodell auswählen" title="Fahrzeugmodell auswählen">
-                         <option>CADILLAC LYRIQ Luxury</option>
-                         <option>CADILLAC LYRIQ Sport</option>
-                         <option>CADILLAC LYRIQ Premium</option>
-                       </select>
-                     </div>
-                     
-                     <div>
-                       <label className="block text-sm mb-1">Besitzdauer</label>
-                       <select className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500" aria-label="Besitzdauer auswählen" title="Besitzdauer auswählen">
-                         <option>4 Jahre</option>
-                         <option>5 Jahre</option>
-                         <option>6 Jahre</option>
-                       </select>
-                     </div>
-                    
-                    <div>
-                      <label className="block text-sm mb-1">Jährliche Kilometerleistung</label>
-                      <Input type="number" defaultValue={15000} className="w-full" />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm mb-1">Stromkosten pro kWh</label>
-                      <div className="flex">
-                        <Input type="number" defaultValue={0.22} step={0.01} className="w-full rounded-r-none" />
-                        <span className="bg-gray-200 px-3 py-2 rounded-r border-t border-r border-b border-gray-300">CHF</span>
-                      </div>
-                    </div>
-                    
-                    <Button className="w-full">Berechnung aktualisieren</Button>
-                  </div>
-                </Card>
-                
-                {/* TCO Results */}
-                <div className="lg:col-span-2">
-                  <Card className="p-4">
-                    <h4 className="font-medium mb-4">TCO Analyse</h4>
-                    
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                      <div className="p-3 bg-gray-100 rounded">
-                        <p className="text-xs text-gray-500">Anschaffung</p>
-                                                 <p className="text-lg font-medium">CHF 89&apos;900</p>
-                      </div>
-                      <div className="p-3 bg-gray-100 rounded">
-                        <p className="text-xs text-gray-500">Energiekosten</p>
-                                                 <p className="text-lg font-medium">CHF 6&apos;600</p>
-                         <p className="text-xs text-gray-500">für 4 Jahre</p>
-                      </div>
-                      <div className="p-3 bg-gray-100 rounded">
-                        <p className="text-xs text-gray-500">Versicherung</p>
-                                                 <p className="text-lg font-medium">CHF 7&apos;200</p>
-                         <p className="text-xs text-gray-500">für 4 Jahre</p>
-                      </div>
-                      <div className="p-3 bg-gray-100 rounded">
-                        <p className="text-xs text-gray-500">Wartung</p>
-                                                 <p className="text-lg font-medium">CHF 2&apos;400</p>
-                         <p className="text-xs text-gray-500">für 4 Jahre</p>
-                      </div>
-                    </div>
-                    
-                    <div className="p-4 bg-gray-100 rounded">
-                      <div className="flex justify-between mb-2">
-                        <h5 className="font-medium">Gesamtkosten (TCO) über 4 Jahre</h5>
-                                                 <p className="font-bold">CHF 106&apos;100</p>
-                      </div>
-                      <div className="flex justify-between mb-2">
-                        <h5 className="font-medium">Monatliche Kosten</h5>
-                                                 <p className="font-bold">CHF 2&apos;211</p>
-                      </div>
-                      <div className="flex justify-between">
-                        <h5 className="font-medium">Kosten pro km</h5>
-                        <p className="font-bold">CHF 0.44</p>
-                      </div>
-                    </div>
-                  </Card>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-        
-        {/* AI Sales Strategy */}
-        <section className="mb-12">
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="text-xl font-bold mb-6">KI-gestützte Verkaufsstrategie</h3>
-              
-              <div className="bg-gray-100 p-4 rounded mb-6">
-                <div className="flex justify-between mb-4">
-                  <h4 className="font-medium">Kundenempfehlungen</h4>
-                  <Badge className="bg-gray-800 text-white">Auf Kundendaten basierend</Badge>
-                </div>
-                
-                <div className="space-y-4">
-                  <div className="flex items-start space-x-3">
-                    <span className="text-lg mt-1">💡</span>
-                    <div>
-                      <h5 className="font-medium">Primäre Empfehlung: CADILLAC LYRIQ Luxury</h5>
-                      <p className="text-sm text-gray-600">Basierend auf dem bisherigen Fahrzeugbesitz (Tesla Model S) und den finanziellen Möglichkeiten ist der LYRIQ eine optimale Wahl.</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start space-x-3">
-                    <span className="text-lg mt-1">🏷️</span>
-                    <div>
-                      <h5 className="font-medium">Finanzierungsvorschlag</h5>
-                      <p className="text-sm text-gray-600">Der Kunde hat eine starke Bonität (A+) und könnte von einem Leasing mit niedrigem Zinssatz profitieren, speziell bei einer Laufzeit von 48 Monaten.</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start space-x-3">
-                    <span className="text-lg mt-1">📈</span>
-                    <div>
-                      <h5 className="font-medium">Upselling-Potential</h5>
-                      <p className="text-sm text-gray-600">Höherwertige Ausstattungspakete mit Schwerpunkt auf Technologie und Konnektivität könnten für diesen Kunden interessant sein.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card className="p-4">
-                  <h4 className="font-medium mb-4">Verkaufsargumente</h4>
-                  
-                  <div className="space-y-3">
-                    <div className="flex items-start space-x-3">
-                      <div className="min-w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-white">
-                        <span>⚡</span>
-                      </div>
-                      <div>
-                        <h5 className="font-medium">Nachhaltige Mobilität</h5>
-                        <p className="text-sm text-gray-600">Vollelektrisch mit Schweizer Wasserkraft geladen - 97% CO2-Reduktion im Vergleich zum Verbrenner.</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start space-x-3">
-                      <div className="min-w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-white">
-                        <span>💰</span>
-                      </div>
-                      <div>
-                        <h5 className="font-medium">Kosteneffizienz</h5>
-                        <p className="text-sm text-gray-600">Befreit von Strassenverkehrsabgaben und deutlich niedrigere Energiekosten im Vergleich zu Benzin.</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start space-x-3">
-                      <div className="min-w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-white">
-                        <span>🔧</span>
-                      </div>
-                      <div>
-                        <h5 className="font-medium">Wartungsarm</h5>
-                        <p className="text-sm text-gray-600">Weniger bewegliche Teile bedeuten weniger Verschleiss und niedrigere Servicekosten.</p>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-                
-                <Card className="p-4">
-                  <h4 className="font-medium mb-4">Nächste Schritte</h4>
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="min-w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-white">
-                        <span>1</span>
-                      </div>
-                      <div>
-                        <h5 className="font-medium">Probefahrt anbieten</h5>
-                        <p className="text-sm text-gray-600">CADILLAC LYRIQ für eine Wochenendprobefahrt vorschlagen.</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center space-x-3">
-                      <div className="min-w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-white">
-                        <span>2</span>
-                      </div>
-                      <div>
-                        <h5 className="font-medium">Persönliches TCO-Dokument zusenden</h5>
-                        <p className="text-sm text-gray-600">Angepasste TCO-Berechnung per E-Mail mit Vergleich zu seinem Tesla Model S.</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center space-x-3">
-                      <div className="min-w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-white">
-                        <span>3</span>
-                      </div>
-                      <div>
-                        <h5 className="font-medium">Ladeinfrastruktur besprechen</h5>
-                        <p className="text-sm text-gray-600">Wallbox-Installation anbieten und Details zur Förderung in seiner Gemeinde vorstellen.</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-6">
-                    <Button className="w-full flex items-center justify-center space-x-2">
-                      <span>📅</span>
-                      <span>Termin vereinbaren</span>
-                    </Button>
-                  </div>
-                </Card>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
+        {loading && (
+          <div className="flex items-center justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          </div>
+        )}
+        {renderContent()}
       </main>
-
-      {/* Footer */}
-      <footer className="bg-gray-100 border-t border-gray-300 py-8">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <h4 className="font-bold mb-4">CADILLAC EV - Customer Intelligence System</h4>
-              <p className="text-sm text-gray-600">Ein umfassendes Tool für den Verkauf von CADILLAC Elektrofahrzeugen in der Schweiz. Entwickelt für optimale Kundenberatung und datengestützte Verkaufsstrategien.</p>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Rechtliches</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li><a href="#" className="hover:underline">Datenschutzrichtlinie</a></li>
-                <li><a href="#" className="hover:underline">Nutzungsbedingungen</a></li>
-                <li><a href="#" className="hover:underline">Impressum</a></li>
-                <li><a href="#" className="hover:underline">Haftungsausschluss</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Kontakt</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li>📍 Bahnhofstrasse 123, 8001 Zürich</li>
-                <li>📞 +41 44 123 45 67</li>
-                <li>📧 info@cadillac-schweiz.ch</li>
-                <li>🌐 www.cadillac-schweiz.ch</li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-300 mt-6 pt-6 text-center text-sm text-gray-600">
-            <p>&copy; 2023 CADILLAC Schweiz. Alle Rechte vorbehalten.</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

@@ -14,14 +14,25 @@ const app = express();
 app.use(cors({ origin: true }));
 app.use(express.json());
 
-// Initialize OpenAI
-const openai = new OpenAI({
-  apiKey: functions.config().openai?.key || process.env.OPENAI_API_KEY,
-});
+// Initialize OpenAI with runtime configuration
+let openai: OpenAI;
+
+function initializeOpenAI() {
+  const apiKey = process.env.OPENAI_API_KEY || functions.config().openai?.api_key;
+  if (!apiKey) {
+    throw new Error('OpenAI API key not configured');
+  }
+  openai = new OpenAI({ apiKey });
+}
 
 // AI Analysis Function
 app.post('/analyze-customer', async (req, res) => {
   try {
+    // Initialize OpenAI if not already done
+    if (!openai) {
+      initializeOpenAI();
+    }
+    
     const { customer, vehicle_preferences } = req.body;
 
     if (!customer || !vehicle_preferences) {
@@ -226,27 +237,27 @@ app.get('/health', (req, res) => {
 // Export the Express app as a Firebase Function
 export const api = functions.https.onRequest(app);
 
-// Firestore triggers
-export const onCustomerCreated = functions.firestore
-  .document('customers/{customerId}')
-  .onCreate(async (snap: functions.firestore.QueryDocumentSnapshot, context: functions.EventContext) => {
-    const customerData = snap.data();
-    console.log('New customer created:', customerData);
-    
-    // You can add additional logic here, like:
-    // - Send welcome email
-    // - Create initial analysis
-    // - Add to marketing lists
-  });
+// Firestore triggers (temporarily disabled until Firestore is fully set up)
+// export const onCustomerCreated = functions.firestore
+//   .document('customers/{customerId}')
+//   .onCreate(async (snap: functions.firestore.QueryDocumentSnapshot, context: functions.EventContext) => {
+//     const customerData = snap.data();
+//     console.log('New customer created:', customerData);
+//     
+//     // You can add additional logic here, like:
+//     // - Send welcome email
+//     // - Create initial analysis
+//     // - Add to marketing lists
+//   });
 
-export const onTcoCalculationCreated = functions.firestore
-  .document('tco_calculations/{calculationId}')
-  .onCreate(async (snap: functions.firestore.QueryDocumentSnapshot, context: functions.EventContext) => {
-    const tcoData = snap.data();
-    console.log('New TCO calculation created:', tcoData);
-    
-    // You can add additional logic here, like:
-    // - Send calculation summary to customer
-    // - Update customer analytics
-    // - Trigger follow-up actions
-  }); 
+// export const onTcoCalculationCreated = functions.firestore
+//   .document('tco_calculations/{calculationId}')
+//   .onCreate(async (snap: functions.firestore.QueryDocumentSnapshot, context: functions.EventContext) => {
+//     const tcoData = snap.data();
+//     console.log('New TCO calculation created:', tcoData);
+//     
+//     // You can add additional logic here, like:
+//     // - Send calculation summary to customer
+//     // - Update customer analytics
+//     // - Trigger follow-up actions
+//   }); 
