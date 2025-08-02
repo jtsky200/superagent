@@ -6,8 +6,11 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "postbuild": "cp -r .next/static .next/standalone/.next/ 2>/dev/null || echo 'Static files handled by Next.js'"
+    "lint": "next lint --fix",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf .next out",
+    "build:analyze": "ANALYZE=true npm run build",
+    "postbuild": "echo 'Frontend build completed for Firebase App Hosting'"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.6",

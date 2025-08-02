@@ -3,14 +3,21 @@
     "source": "./frontend",
     "build": {
       "commands": [
-        "npm install",
+        "npm install --only=production",
         "npm run build"
       ]
+    },
+    "runtime": {
+      "nodeVersion": "22"
     },
     "env": [
       {
         "variable": "NEXT_PUBLIC_API_BASE_URL",
         "value": "https://your-backend-url.com/api"
+      },
+      {
+        "variable": "NODE_ENV",
+        "value": "production"
       }
     ]
   }
