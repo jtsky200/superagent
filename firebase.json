@@ -13,11 +13,36 @@
     "env": [
       {
         "variable": "NEXT_PUBLIC_API_BASE_URL",
-        "value": "https://your-backend-url.com/api"
+        "value": "https://cadillac-ev-cis-backend.vercel.app"
       },
       {
         "variable": "NODE_ENV",
         "value": "production"
+      }
+    ]
+  },
+  "functions": {
+    "source": "functions",
+    "runtime": "nodejs22",
+    "predeploy": [
+      "npm --prefix \"$RESOURCE_DIR\" run build"
+    ]
+  },
+  "hosting": {
+    "public": "frontend/out",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/api/**",
+        "function": "api"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
       }
     ]
   }
